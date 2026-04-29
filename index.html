@@ -91,12 +91,19 @@ async function load() {
   }
 }
 
+function fmtDate(d) {
+  if (!d) return '';
+  const dt = new Date(d);
+  if (isNaN(dt)) return d;
+  return dt.toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
+}
+
 function updateStats() {
   document.getElementById('total').textContent = all.length;
   const mats = new Set(all.map(r => r.material).filter(Boolean));
   document.getElementById('mat-count').textContent = mats.size;
   const dates = all.map(r => r.date).filter(Boolean).sort();
-  document.getElementById('latest').textContent = dates.length ? dates[dates.length-1] : '—';
+  document.getElementById('latest').textContent = dates.length ? fmtDate(dates[dates.length-1]) : '—';
 }
 
 function populateMaterials() {
@@ -124,7 +131,7 @@ function render() {
   el.innerHTML = rows.map(r => `
     <div class="card">
       <div class="card-name">${esc(r.name)}</div>
-      <div class="card-date">${esc(r.date)}</div>
+      <div class="card-date">${fmtDate(r.date)}</div>
       ${r.material ? `<span class="badge">${esc(r.material)}</span>` : ''}
       ${r.notes ? `<div class="card-notes">${esc(r.notes)}</div>` : ''}
       ${r.photo ? `<a class="card-link" href="${esc(r.photo)}" target="_blank">View photo →</a>` : '<span class="no-photo">No photo attached</span>'}
