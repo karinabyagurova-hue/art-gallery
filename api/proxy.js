@@ -1,4 +1,4 @@
-const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbybCy53FgttYEoJraW_vzkZh6Kty2CppROXnoI_l8_L2eEdhV0GShT0V-NUpS8LpVA8DQ/exec';
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzi88tM8ryNSL2gCm8Xcx3kb5tHuhd7GwVy9rTXiBSGId2z3BM8Rs5cSOAhkdGEjZXHUw/exec';
 
 export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -16,15 +16,16 @@ export default async function handler(req, res) {
       const data = await response.json();
       res.status(200).json(data);
     } else if (req.method === 'POST') {
+      const body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
       const response = await fetch(APPS_SCRIPT_URL, {
         method: 'POST',
-        body: JSON.stringify(req.body),
+        body: body,
         headers: { 'Content-Type': 'application/json' }
       });
       const data = await response.json();
       res.status(200).json(data);
     }
-  } catch (e) {
+  } catch(e) {
     res.status(500).json({ error: e.message });
   }
 }
