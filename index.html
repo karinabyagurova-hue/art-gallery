@@ -1,291 +1,31 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Arya's Art Gallery</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,sans-serif;background:#faf9f7;color:#1a1a1a;padding:1.5rem;max-width:900px;margin:0 auto}
-h1{font-size:22px;font-weight:500}
-.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:12px}
-.btn{padding:8px 16px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer}
-.btn:hover{background:#333}
-.btn-outline{background:#fff;color:#1a1a1a;border:1px solid #ddd}
-.btn-outline:hover{background:#f0f0f0}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:1.5rem}
-.stat{background:#fff;border:1px solid #eee;border-radius:8px;padding:1rem;text-align:center}
-.stat-num{font-size:24px;font-weight:500}
-.stat-label{font-size:13px;color:#666;margin-top:4px}
-.controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
-input[type=text],select,input[type=date]{padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;background:#fff;outline:none}
-input[type=text]{flex:1;min-width:160px}
-input:focus,select:focus{border-color:#aaa}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
-.card{background:#fff;border:1px solid #eee;border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
-.card-img{width:100%;aspect-ratio:4/3;object-fit:cover;background:#f5f5f5;display:block}
-.card-img-placeholder{width:100%;aspect-ratio:4/3;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:32px;color:#ddd}
-.card-body{padding:1rem;display:flex;flex-direction:column;gap:6px;flex:1}
-.card-name{font-size:15px;font-weight:500}
-.card-date{font-size:13px;color:#888}
-.badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;background:#f0f0f0;color:#555;border:1px solid #e0e0e0;width:fit-content}
-.card-notes{font-size:13px;color:#666;line-height:1.5}
-.empty{text-align:center;color:#999;padding:3rem;font-size:15px}
-.loading{text-align:center;padding:3rem;color:#999}
+const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzi88tM8ryNSL2gCm8Xcx3kb5tHuhd7GwVy9rTXiBSGId2z3BM8Rs5cSOAhkdGEjZXHUw/exec';
 
-/* Modal */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem}
-.modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
-.modal h2{font-size:18px;font-weight:500;margin-bottom:1.5rem}
-.form-group{margin-bottom:1rem}
-.form-group label{display:block;font-size:13px;color:#666;margin-bottom:6px}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;outline:none}
-.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#aaa}
-.form-group textarea{resize:vertical;min-height:80px}
-.photo-upload{border:2px dashed #ddd;border-radius:8px;padding:2rem;text-align:center;cursor:pointer;transition:border-color 0.2s}
-.photo-upload:hover{border-color:#aaa}
-.photo-upload input{display:none}
-.photo-preview{width:100%;border-radius:8px;margin-top:1rem;display:none}
-.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.5rem}
-.hidden{display:none}
-.success-msg{background:#f0faf4;color:#1a7a4a;padding:1rem;border-radius:8px;font-size:14px;margin-top:1rem;text-align:center}
-.error-msg{background:#fdf0f0;color:#c0392b;padding:1rem;border-radius:8px;font-size:14px;margin-top:1rem;text-align:center}
-.uploading{opacity:0.6;pointer-events:none}
-</style>
-</head>
-<body>
+export default async function handler(req, res) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
-<div class="header">
-  <h1>🎨 Arya's art gallery</h1>
-  <button class="btn" onclick="openModal()">+ Add artwork</button>
-</div>
-
-<div class="stats">
-  <div class="stat"><div class="stat-num" id="total">—</div><div class="stat-label">Total artworks</div></div>
-  <div class="stat"><div class="stat-num" id="mat-count">—</div><div class="stat-label">Materials used</div></div>
-  <div class="stat"><div class="stat-num" id="latest">—</div><div class="stat-label">Latest entry</div></div>
-</div>
-
-<div class="controls">
-  <input type="text" id="search" placeholder="Search by name or notes…" oninput="render()">
-  <select id="filter-mat" onchange="render()">
-    <option value="">All materials</option>
-  </select>
-  <select id="sort" onchange="render()">
-    <option value="desc">Newest first</option>
-    <option value="asc">Oldest first</option>
-    <option value="az">A → Z</option>
-  </select>
-</div>
-
-<div id="gallery" class="loading">Loading artwork…</div>
-
-<!-- Add artwork modal -->
-<div class="overlay hidden" id="overlay">
-  <div class="modal">
-    <h2>Add new artwork</h2>
-    <div class="form-group">
-      <label>Project name</label>
-      <input type="text" id="f-name" placeholder="e.g. Rainbow butterfly">
-    </div>
-    <div class="form-group">
-      <label>Date created</label>
-      <input type="date" id="f-date">
-    </div>
-    <div class="form-group">
-      <label>Materials used</label>
-      <select id="f-material">
-        <option value="">Select material…</option>
-        <option>acrylic</option>
-        <option>pencil</option>
-        <option>felt pen</option>
-        <option>pen</option>
-        <option>watercolor</option>
-        <option>paper</option>
-        <option>clay</option>
-        <option>other</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Notes (optional)</label>
-      <textarea id="f-notes" placeholder="e.g. Made at art class, theme was animals…"></textarea>
-    </div>
-    <div class="form-group">
-      <label>Photo</label>
-      <div class="photo-upload" onclick="document.getElementById('f-photo').click()">
-        <div id="upload-label">📷 Tap to take or choose a photo</div>
-        <input type="file" id="f-photo" accept="image/*" capture="environment" onchange="previewPhoto(this)">
-        <img id="photo-preview" class="photo-preview">
-      </div>
-    </div>
-    <div id="form-msg"></div>
-    <div class="form-actions">
-      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
-      <button class="btn" id="submit-btn" onclick="submitArtwork()">Save artwork</button>
-    </div>
-  </div>
-</div>
-
-<script>
-const API = '/api/proxy';
-let all = [];
-let photoBase64 = null, photoName = null, photoMime = null;
-
-function getVal(row, ...keys) {
-  for (const k of keys) {
-    const found = Object.keys(row).find(rk => rk.replace(/"/g,'').trim().toLowerCase() === k.toLowerCase());
-    if (found && row[found]) return row[found];
+  if (req.method === 'OPTIONS') {
+    res.status(200).end();
+    return;
   }
-  return '';
-}
-
-function fmtDate(d) {
-  if (!d) return '';
-  const dt = new Date(d);
-  if (isNaN(dt)) return d;
-  return dt.toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
-}
-
-async function load() {
-  try {
-    const res = await fetch(API);
-    const data = await res.json();
-    all = data.map(r => ({
-      name: getVal(r, "Project Name (what's it called?)", 'project name', 'name'),
-      date: getVal(r, 'Date Created', 'date created', 'date'),
-      material: getVal(r, 'Materials Used', 'materials used', 'material'),
-      notes: getVal(r, 'Notes', 'notes'),
-      photo: getVal(r, 'Photo URL', 'photo url', 'Photo of Artwork', 'photo of artwork', 'photo')
-    })).filter(r => r.name || r.date);
-    updateStats();
-    populateMaterials();
-    render();
-  } catch(e) {
-    document.getElementById('gallery').innerHTML = `<div class="empty">Could not load artworks. Please try again.<br><small>${e.message}</small></div>`;
-  }
-}
-
-function updateStats() {
-  document.getElementById('total').textContent = all.length;
-  const mats = new Set(all.map(r => r.material).filter(Boolean));
-  document.getElementById('mat-count').textContent = mats.size;
-  const dates = all.map(r => r.date).filter(Boolean).sort();
-  document.getElementById('latest').textContent = dates.length ? fmtDate(dates[dates.length-1]) : '—';
-}
-
-function populateMaterials() {
-  const sel = document.getElementById('filter-mat');
-  sel.innerHTML = '<option value="">All materials</option>';
-  const mats = [...new Set(all.map(r => r.material).filter(Boolean))].sort();
-  mats.forEach(m => { const o = document.createElement('option'); o.value = m; o.textContent = m; sel.appendChild(o); });
-}
-
-function render() {
-  const q = document.getElementById('search').value.toLowerCase();
-  const mat = document.getElementById('filter-mat').value;
-  const sort = document.getElementById('sort').value;
-  let rows = all.filter(r => {
-    const mq = !q || r.name.toLowerCase().includes(q) || r.notes.toLowerCase().includes(q);
-    const mm = !mat || r.material === mat;
-    return mq && mm;
-  });
-  if (sort === 'asc') rows.sort((a,b) => a.date.localeCompare(b.date));
-  else if (sort === 'desc') rows.sort((a,b) => b.date.localeCompare(a.date));
-  else rows.sort((a,b) => a.name.localeCompare(b.name));
-
-  const el = document.getElementById('gallery');
-  if (!rows.length) { el.className='empty'; el.textContent='No artworks found.'; return; }
-  el.className = 'grid';
-  el.innerHTML = rows.map(r => `
-    <div class="card">
-      ${r.photo
-        ? `<img class="card-img" src="${esc(r.photo)}" alt="${esc(r.name)}" onerror="this.style.display='none'">`
-        : `<div class="card-img-placeholder">🎨</div>`}
-      <div class="card-body">
-        <div class="card-name">${esc(r.name)}</div>
-        <div class="card-date">${fmtDate(r.date)}</div>
-        ${r.material ? `<span class="badge">${esc(r.material)}</span>` : ''}
-        ${r.notes ? `<div class="card-notes">${esc(r.notes)}</div>` : ''}
-      </div>
-    </div>
-  `).join('');
-}
-
-function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-function openModal() {
-  document.getElementById('overlay').classList.remove('hidden');
-  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
-}
-
-function closeModal() {
-  document.getElementById('overlay').classList.add('hidden');
-  document.getElementById('f-name').value = '';
-  document.getElementById('f-material').value = '';
-  document.getElementById('f-notes').value = '';
-  document.getElementById('f-photo').value = '';
-  document.getElementById('photo-preview').style.display = 'none';
-  document.getElementById('upload-label').style.display = 'block';
-  document.getElementById('form-msg').innerHTML = '';
-  photoBase64 = null; photoName = null; photoMime = null;
-}
-
-function previewPhoto(input) {
-  const file = input.files[0];
-  if (!file) return;
-  photoName = file.name;
-  photoMime = file.type;
-  const reader = new FileReader();
-  reader.onload = e => {
-    const data = e.target.result;
-    photoBase64 = data.split(',')[1];
-    const preview = document.getElementById('photo-preview');
-    preview.src = data;
-    preview.style.display = 'block';
-    document.getElementById('upload-label').style.display = 'none';
-  };
-  reader.readAsDataURL(file);
-}
-
-async function submitArtwork() {
-  const name = document.getElementById('f-name').value.trim();
-  const date = document.getElementById('f-date').value;
-  const material = document.getElementById('f-material').value;
-  const notes = document.getElementById('f-notes').value.trim();
-  const msg = document.getElementById('form-msg');
-
-  if (!name) { msg.innerHTML = '<div class="error-msg">Please enter a project name.</div>'; return; }
-
-  const btn = document.getElementById('submit-btn');
-  btn.textContent = 'Saving…';
-  btn.classList.add('uploading');
-  msg.innerHTML = '';
 
   try {
-    const payload = { name, date, material, notes };
-    if (photoBase64) { payload.photoData = photoBase64; payload.photoName = photoName; payload.photoMime = photoMime; }
-
-    const res = await fetch(API, {
-      method: 'POST',
-      body: JSON.stringify(payload)
-    });
-    const result = await res.json();
-
-    if (result.success) {
-      msg.innerHTML = '<div class="success-msg">Artwork saved! 🎨</div>';
-      setTimeout(() => { closeModal(); load(); }, 1500);
-    } else {
-      msg.innerHTML = `<div class="error-msg">Error: ${result.error}</div>`;
+    if (req.method === 'GET') {
+      const response = await fetch(APPS_SCRIPT_URL);
+      const data = await response.json();
+      res.status(200).json(data);
+    } else if (req.method === 'POST') {
+      const body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+      const response = await fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        body: body,
+        headers: { 'Content-Type': 'application/json' }
+      });
+      const data = await response.json();
+      res.status(200).json(data);
     }
   } catch(e) {
-    msg.innerHTML = `<div class="error-msg">Failed to save. Please try again.</div>`;
+    res.status(500).json({ error: e.message });
   }
-
-  btn.textContent = 'Save artwork';
-  btn.classList.remove('uploading');
 }
-
-load();
-</script>
-</body>
-</html>
