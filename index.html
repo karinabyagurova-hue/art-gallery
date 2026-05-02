@@ -6,69 +6,73 @@
 <title>Arya's Art Gallery</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,sans-serif;background:#faf9f7;color:#1a1a1a;padding:1.5rem;max-width:900px;margin:0 auto}
+body{font-family:system-ui,sans-serif;background:#faf9f7;color:#1a1a1a;padding:1.5rem;max-width:960px;margin:0 auto}
 .header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:12px}
 h1{font-size:22px;font-weight:500}
-.btn{padding:8px 16px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer}
+.btn{padding:9px 18px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-size:14px;cursor:pointer}
 .btn:hover{background:#333}
 .btn-outline{background:#fff;color:#1a1a1a;border:1px solid #ddd}
-.btn-outline:hover{background:#f0f0f0}
-.btn-sm{padding:8px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;font-size:13px;cursor:pointer;color:#1a1a1a}
-.btn-sm:hover{background:#f0f0f0}
+.btn-outline:hover{background:#f5f5f5}
+.btn-sm{padding:7px 12px;border-radius:7px;border:1px solid #e0e0e0;background:#fff;font-size:12px;cursor:pointer;color:#444}
+.btn-sm:hover{background:#f5f5f5}
+.btn-sm.danger:hover{background:#fdf0f0;color:#c0392b;border-color:#f5c6c6}
 .btn-sm.primary{background:#1a1a1a;color:#fff;border:none}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:1.5rem}
-.stat{background:#fff;border:1px solid #eee;border-radius:8px;padding:1rem;text-align:center}
-.stat-num{font-size:24px;font-weight:500}
-.stat-label{font-size:13px;color:#666;margin-top:4px}
+.btn-sm.primary:hover{background:#333}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin-bottom:1.5rem}
+.stat{background:#fff;border:1px solid #eee;border-radius:10px;padding:1rem;text-align:center}
+.stat-num{font-size:26px;font-weight:500}
+.stat-label{font-size:12px;color:#888;margin-top:4px}
 .controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.5rem}
-input[type=text],select,input[type=date]{padding:8px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;background:#fff;outline:none}
-input[type=text]{flex:1;min-width:160px}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
-.card{background:#fff;border:1px solid #eee;border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
-.card-img{width:100%;aspect-ratio:4/3;object-fit:cover;background:#f5f5f5;display:block}
-.card-img-placeholder{width:100%;aspect-ratio:4/3;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:32px}
-.card-body{padding:1rem;display:flex;flex-direction:column;gap:6px;flex:1}
+input[type=text],select,input[type=date],textarea{font-family:inherit}
+input[type=text]{flex:1;min-width:160px;padding:9px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;background:#fff}
+select{padding:9px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none;background:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:16px}
+.card{background:#fff;border:1px solid #eee;border-radius:12px;overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s}
+.card:hover{box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.card-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;background:#f5f5f5;cursor:pointer}
+.card-placeholder{width:100%;aspect-ratio:4/3;background:#f5f5f5;display:flex;align-items:center;justify-content:center;font-size:36px}
+.card-body{padding:12px;display:flex;flex-direction:column;gap:5px;flex:1}
 .card-name{font-size:15px;font-weight:500}
-.card-date{font-size:13px;color:#888}
-.badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;background:#f0f0f0;color:#555;border:1px solid #e0e0e0;width:fit-content}
-.card-notes{font-size:13px;color:#666;line-height:1.5}
-.card-actions{display:flex;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid #f0f0f0}
-.card-actions button{flex:1;padding:6px;border-radius:6px;border:1px solid #eee;background:#fafafa;font-size:12px;cursor:pointer;color:#555}
-.card-actions button:hover{background:#f0f0f0}
-.card-actions button.del:hover{background:#fdf0f0;color:#c0392b;border-color:#f5c6c6}
-.empty,.loading{text-align:center;color:#999;padding:3rem;font-size:15px}
-/* Edit modal */
-.edit-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem}
-.edit-modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:460px;max-height:90vh;overflow-y:auto}
-.edit-modal h2{font-size:18px;font-weight:500;margin-bottom:1.25rem}
+.card-date{font-size:12px;color:#999}
+.badge{display:inline-block;font-size:11px;padding:3px 9px;border-radius:20px;background:#f2f2f2;color:#555;border:1px solid #e8e8e8;width:fit-content;margin-top:2px}
+.card-notes{font-size:12px;color:#777;line-height:1.5;margin-top:2px}
+.card-actions{display:flex;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid #f0f0f0}
+.card-actions button{flex:1}
+.empty,.loading{text-align:center;color:#aaa;padding:4rem;font-size:15px}
 
-/* Modal */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem}
+/* Overlays */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem;overflow-y:auto}
 .modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:500px;max-height:92vh;overflow-y:auto}
 .modal h2{font-size:18px;font-weight:500;margin-bottom:1.25rem}
 .form-group{margin-bottom:1rem}
-.form-group label{display:block;font-size:13px;color:#666;margin-bottom:6px}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;outline:none}
+.form-group label{display:block;font-size:12px;color:#777;margin-bottom:5px;font-weight:500}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#999}
 .form-group textarea{resize:vertical;min-height:70px}
-.photo-upload{border:2px dashed #ddd;border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;color:#666;font-size:14px}
-.photo-upload:hover{border-color:#aaa}
-.photo-upload input{display:none}
 .form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem}
-.hidden{display:none}
-.success-msg{background:#f0faf4;color:#1a7a4a;padding:.75rem;border-radius:8px;font-size:14px;margin-top:.75rem;text-align:center}
-.error-msg{background:#fdf0f0;color:#c0392b;padding:.75rem;border-radius:8px;font-size:14px;margin-top:.75rem;text-align:center}
+.hidden{display:none!important}
+.msg-ok{background:#f0faf4;color:#1a7a4a;padding:.75rem;border-radius:8px;font-size:13px;margin-top:.75rem;text-align:center}
+.msg-err{background:#fdf0f0;color:#c0392b;padding:.75rem;border-radius:8px;font-size:13px;margin-top:.75rem;text-align:center}
+
+/* Photo picker */
+.photo-pick{border:2px dashed #ddd;border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;color:#888;font-size:14px}
+.photo-pick:hover{border-color:#aaa;background:#fafafa}
+.photo-pick input{display:none}
 
 /* Crop */
-.crop-wrapper{margin-top:.75rem;border-radius:10px;overflow:hidden;background:#111;position:relative}
-.crop-canvas-wrap{position:relative;width:100%;overflow:hidden;touch-action:none;user-select:none}
-.crop-canvas-wrap canvas{display:block;width:100%;height:auto}
-.crop-toolbar{display:flex;gap:6px;padding:.5rem;background:#111;flex-wrap:wrap}
-.crop-toolbar button{flex:1;min-width:80px;padding:8px 4px;border-radius:7px;border:1px solid #444;background:#222;color:#fff;font-size:13px;cursor:pointer}
-.crop-toolbar button:hover{background:#333}
-.crop-toolbar button.primary{background:#fff;color:#111;border-color:#fff}
-.preview-wrap{margin-top:.5rem}
-.preview-wrap img{width:100%;border-radius:8px;display:block}
-.preview-actions{display:flex;gap:6px;margin-top:.5rem}
+.crop-wrap{background:#111;border-radius:10px;overflow:hidden;margin-top:.75rem}
+.crop-canvas-box{position:relative;touch-action:none;user-select:none}
+.crop-canvas-box canvas{display:block;width:100%;height:auto}
+.crop-bar{display:flex;gap:6px;padding:.6rem;background:#111;flex-wrap:wrap}
+.crop-bar button{flex:1;min-width:70px;padding:8px 4px;border-radius:7px;border:1px solid #555;background:#222;color:#ddd;font-size:12px;cursor:pointer}
+.crop-bar button:hover{background:#333}
+.crop-bar button.ok{background:#fff;color:#111;border-color:#fff;font-weight:500}
+.preview-img{width:100%;border-radius:8px;display:block;margin-top:.5rem}
+.preview-acts{display:flex;gap:6px;margin-top:.5rem}
+
+/* Lightbox */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;z-index:300;cursor:zoom-out}
+.lightbox img{max-width:95vw;max-height:95vh;border-radius:8px;object-fit:contain}
 </style>
 </head>
 <body>
@@ -77,20 +81,20 @@ input[type=text]{flex:1;min-width:160px}
   <h1>🎨 Arya's art gallery</h1>
   <div style="display:flex;gap:8px">
     <button class="btn-sm" onclick="load()">↻ Refresh</button>
-    <button class="btn" onclick="openModal()">+ Add artwork</button>
+    <button class="btn" onclick="openAdd()">+ Add artwork</button>
   </div>
 </div>
 
 <div class="stats">
-  <div class="stat"><div class="stat-num" id="total">—</div><div class="stat-label">Total artworks</div></div>
-  <div class="stat"><div class="stat-num" id="mat-count">—</div><div class="stat-label">Materials used</div></div>
-  <div class="stat"><div class="stat-num" id="latest">—</div><div class="stat-label">Latest entry</div></div>
+  <div class="stat"><div class="stat-num" id="s-total">—</div><div class="stat-label">Total artworks</div></div>
+  <div class="stat"><div class="stat-num" id="s-mats">—</div><div class="stat-label">Materials used</div></div>
+  <div class="stat"><div class="stat-num" id="s-latest">—</div><div class="stat-label">Latest entry</div></div>
 </div>
 
 <div class="controls">
-  <input type="text" id="search" placeholder="Search by name or notes…" oninput="render()">
-  <select id="filter-mat" onchange="render()"><option value="">All materials</option></select>
-  <select id="sort" onchange="render()">
+  <input type="text" id="c-search" placeholder="Search by name or notes…" oninput="render()">
+  <select id="c-mat" onchange="render()"><option value="">All materials</option></select>
+  <select id="c-sort" onchange="render()">
     <option value="desc">Newest first</option>
     <option value="asc">Oldest first</option>
     <option value="az">A → Z</option>
@@ -99,146 +103,114 @@ input[type=text]{flex:1;min-width:160px}
 
 <div id="gallery" class="loading">Loading artwork…</div>
 
-<!-- Edit modal -->
-<div class="edit-overlay hidden" id="edit-overlay">
-  <div class="edit-modal">
-    <h2>✏️ Edit artwork</h2>
-    <input type="hidden" id="e-row">
-    <div class="form-group">
-      <label>Project name</label>
-      <input type="text" id="e-name">
+<!-- ADD MODAL -->
+<div class="overlay hidden" id="add-overlay">
+  <div class="modal">
+    <h2>Add new artwork</h2>
+    <div class="form-group"><label>Project name *</label><input type="text" id="a-name" placeholder="e.g. Rainbow butterfly"></div>
+    <div class="form-group"><label>Date created</label><input type="date" id="a-date"></div>
+    <div class="form-group"><label>Materials used</label>
+      <select id="a-mat"><option value="">Select…</option><option>acrylic</option><option>pencil</option><option>felt pen</option><option>pen</option><option>watercolor</option><option>paper</option><option>clay</option><option>other</option></select>
     </div>
-    <div class="form-group">
-      <label>Date created</label>
-      <input type="date" id="e-date">
+    <div class="form-group"><label>Notes (optional)</label><textarea id="a-notes" placeholder="e.g. Made at art class, theme was animals…"></textarea></div>
+    <div class="form-group"><label>Photo</label>
+      <div id="a-step-pick">
+        <div class="photo-pick" onclick="document.getElementById('a-photo').click()">
+          📷 Take a photo or choose from gallery
+          <input type="file" id="a-photo" accept="image/*,image/heic,image/heif" onchange="onPhoto(this)">
+        </div>
+      </div>
+      <div id="a-step-crop" class="hidden">
+        <div class="crop-wrap"><div class="crop-canvas-box" id="a-crop-box"><canvas id="a-canvas"></canvas></div>
+          <div class="crop-bar">
+            <button onclick="rotateImg(-90)">↺ Left</button>
+            <button onclick="rotateImg(90)">↻ Right</button>
+            <button onclick="resetCropBox()">⊡ Reset</button>
+            <button class="ok" onclick="applyCrop()">✓ Use crop</button>
+          </div>
+        </div>
+        <button class="btn-sm" style="width:100%;margin-top:6px" onclick="clearPhoto()">↩ Change photo</button>
+      </div>
+      <div id="a-step-preview" class="hidden">
+        <img id="a-preview" class="preview-img">
+        <div class="preview-acts">
+          <button class="btn-sm" style="flex:1" onclick="clearPhoto()">↩ Change</button>
+          <button class="btn-sm" style="flex:1" onclick="reCrop()">✂ Re-crop</button>
+        </div>
+      </div>
     </div>
-    <div class="form-group">
-      <label>Materials used</label>
-      <select id="e-material">
-        <option value="">Select material…</option>
-        <option>acrylic</option><option>pencil</option><option>felt pen</option>
-        <option>pen</option><option>watercolor</option><option>paper</option>
-        <option>clay</option><option>other</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Notes</label>
-      <textarea id="e-notes" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;min-height:70px;outline:none;resize:vertical"></textarea>
-    </div>
-    <div id="edit-msg"></div>
+    <div id="a-msg"></div>
     <div class="form-actions">
-      <button class="btn btn-outline" onclick="closeEdit()">Cancel</button>
-      <button class="btn" id="edit-btn" onclick="saveEdit()">Save changes</button>
+      <button class="btn btn-outline" onclick="closeAdd()">Cancel</button>
+      <button class="btn" id="a-btn" onclick="submitAdd()">Save artwork</button>
     </div>
   </div>
 </div>
 
-<!-- Modal -->
-<div class="overlay hidden" id="overlay">
-  <div class="modal" id="modal-inner">
-    <h2>Add new artwork</h2>
-    <div class="form-group">
-      <label>Project name</label>
-      <input type="text" id="f-name" placeholder="e.g. Rainbow butterfly">
+<!-- EDIT MODAL -->
+<div class="overlay hidden" id="edit-overlay">
+  <div class="modal">
+    <h2>✏️ Edit artwork</h2>
+    <input type="hidden" id="e-row">
+    <div class="form-group"><label>Project name *</label><input type="text" id="e-name"></div>
+    <div class="form-group"><label>Date created</label><input type="date" id="e-date"></div>
+    <div class="form-group"><label>Materials used</label>
+      <select id="e-mat"><option value="">Select…</option><option>acrylic</option><option>pencil</option><option>felt pen</option><option>pen</option><option>watercolor</option><option>paper</option><option>clay</option><option>other</option></select>
     </div>
-    <div class="form-group">
-      <label>Date created</label>
-      <input type="date" id="f-date">
-    </div>
-    <div class="form-group">
-      <label>Materials used</label>
-      <select id="f-material">
-        <option value="">Select material…</option>
-        <option>acrylic</option><option>pencil</option><option>felt pen</option>
-        <option>pen</option><option>watercolor</option><option>paper</option>
-        <option>clay</option><option>other</option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label>Notes (optional)</label>
-      <textarea id="f-notes" placeholder="e.g. Made at art class…"></textarea>
-    </div>
-
-    <div class="form-group">
-      <label>Photo</label>
-
-      <!-- Step 1: pick photo -->
-      <div id="step-pick">
-        <div class="photo-upload" onclick="document.getElementById('f-photo').click()">
-          📷 Take a photo or choose from gallery
-          <input type="file" id="f-photo" accept="image/*,image/heic,image/heif" onchange="onPhotoSelected(this)">
-        </div>
-      </div>
-
-      <!-- Step 2: crop -->
-      <div id="step-crop" class="hidden">
-        <div class="crop-wrapper">
-          <div class="crop-canvas-wrap" id="crop-wrap">
-            <canvas id="crop-canvas"></canvas>
-          </div>
-          <div class="crop-toolbar">
-            <button onclick="rotate(-90)">↺ Rotate L</button>
-            <button onclick="rotate(90)">↻ Rotate R</button>
-            <button onclick="resetCrop()">⊡ Reset crop</button>
-            <button class="primary" onclick="applyCrop()">✓ Use crop</button>
-          </div>
-        </div>
-        <div style="margin-top:6px">
-          <button class="btn-sm" onclick="resetPhoto()" style="width:100%">↩ Change photo</button>
-        </div>
-      </div>
-
-      <!-- Step 3: preview -->
-      <div id="step-preview" class="hidden">
-        <div class="preview-wrap">
-          <img id="preview-img">
-        </div>
-        <div class="preview-actions">
-          <button class="btn-sm" onclick="resetPhoto()" style="flex:1">↩ Change photo</button>
-          <button class="btn-sm" onclick="reCrop()" style="flex:1">✂ Re-crop</button>
-        </div>
-      </div>
-    </div>
-
-    <div id="form-msg"></div>
+    <div class="form-group"><label>Notes</label><textarea id="e-notes"></textarea></div>
+    <div id="e-msg"></div>
     <div class="form-actions">
-      <button class="btn btn-outline" onclick="closeModal()">Cancel</button>
-      <button class="btn" id="submit-btn" onclick="submitArtwork()">Save artwork</button>
+      <button class="btn btn-outline" onclick="closeEdit()">Cancel</button>
+      <button class="btn" id="e-btn" onclick="saveEdit()">Save changes</button>
     </div>
   </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox hidden" id="lightbox" onclick="closeLightbox()">
+  <img id="lb-img" src="">
 </div>
 
 <script>
 const API='/api/proxy';
 let all=[];
-let origImage=null, rotation=0;
-let croppedBase64=null;
-let photoName='artwork.jpg';
+let origImg=null,rotation=0,croppedB64=null,photoName='artwork.jpg';
+let cb={x:0,y:0,w:0,h:0},drag=null,dragOrig=null,cbOrig=null;
+const HMIN=30;
 
-// crop box in canvas-pixel coords
-let cb={x:0,y:0,w:0,h:0};
-let drag=null, dragOrig=null, cbOrig=null;
-const MIN=40;
-
-// ── Gallery ──────────────────────────────────────────────
-function getVal(row,...keys){
-  for(const k of keys){
-    const f=Object.keys(row).find(r=>r.replace(/"/g,'').trim().toLowerCase()===k.toLowerCase());
-    if(f&&row[f])return row[f];
-  }return '';
-}
+// ── Helpers ──────────────────────────────────────────────
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function fmtDate(d){
-  if(!d)return '';const dt=new Date(d);
-  if(isNaN(dt))return d;
+  if(!d)return '';
+  const dt=new Date(d);
+  if(isNaN(dt))return String(d);
   return dt.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
 }
-function getDriveThumb(url){
+function toInputDate(d){
+  if(!d)return '';
+  const dt=new Date(d);
+  if(isNaN(dt))return '';
+  return dt.toISOString().split('T')[0];
+}
+function thumb(url){
   if(!url)return null;
   const m=url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  if(m)return`https://drive.google.com/thumbnail?id=${m[1]}&sz=w400`;
+  if(m)return`https://drive.google.com/thumbnail?id=${m[1]}&sz=w600`;
   if(url.includes('thumbnail'))return url;
   return null;
 }
+function gv(row,...keys){
+  for(const k of keys){
+    const f=Object.keys(row).find(r=>r.replace(/"/g,'').trim().toLowerCase()===k.toLowerCase());
+    if(f&&row[f]!==undefined&&row[f]!=='')return row[f];
+  }return '';
+}
+function showStep(step){
+  ['a-step-pick','a-step-crop','a-step-preview'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  document.getElementById(step).classList.remove('hidden');
+}
+
+// ── Gallery load & render ────────────────────────────────
 async function load(){
   const el=document.getElementById('gallery');
   el.className='loading';el.textContent='Loading artwork…';
@@ -246,345 +218,303 @@ async function load(){
     const res=await fetch(API);
     const data=await res.json();
     all=data.map(r=>({
-      name:getVal(r,"Project Name (what's it called?)",'project name','name'),
-      date:getVal(r,'Date Created','date created','date'),
-      material:getVal(r,'Materials Used','materials used','material'),
-      notes:getVal(r,'Notes','notes'),
-      photo:getVal(r,'Photo URL','photo url','photo of artwork','Photo of Artwork','photo')||''
+      _row:r._row,
+      name:gv(r,"Project Name (what's it called?)",'project name','name'),
+      date:gv(r,'Date Created','date created','date'),
+      material:gv(r,'Materials Used','materials used','material'),
+      notes:gv(r,'Notes','notes'),
+      photo:gv(r,'Photo URL','photo url','Photo of Artwork','photo of artwork','photo')
     })).filter(r=>r.name||r.date);
-    updateStats();populateMaterials();render();
+    updateStats();populateMats();render();
   }catch(e){
     el.innerHTML=`<div class="empty">Could not load. Try refreshing.<br><small>${e.message}</small></div>`;
   }
 }
+
 function updateStats(){
-  document.getElementById('total').textContent=all.length;
-  const mats=new Set(all.map(r=>r.material).filter(Boolean));
-  document.getElementById('mat-count').textContent=mats.size;
+  document.getElementById('s-total').textContent=all.length;
+  document.getElementById('s-mats').textContent=new Set(all.map(r=>r.material).filter(Boolean)).size;
   const dates=all.map(r=>r.date).filter(Boolean).sort();
-  document.getElementById('latest').textContent=dates.length?fmtDate(dates[dates.length-1]):'—';
+  document.getElementById('s-latest').textContent=dates.length?fmtDate(dates[dates.length-1]):'—';
 }
-function populateMaterials(){
-  const sel=document.getElementById('filter-mat');
+
+function populateMats(){
+  const sel=document.getElementById('c-mat');
+  const cur=sel.value;
   sel.innerHTML='<option value="">All materials</option>';
   [...new Set(all.map(r=>r.material).filter(Boolean))].sort()
-    .forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;sel.appendChild(o);});
+    .forEach(m=>{const o=document.createElement('option');o.value=m;o.textContent=m;if(m===cur)o.selected=true;sel.appendChild(o);});
 }
+
 function render(){
-  const q=document.getElementById('search').value.toLowerCase();
-  const mat=document.getElementById('filter-mat').value;
-  const sort=document.getElementById('sort').value;
-  let rows=all.filter(r=>(!q||r.name.toLowerCase().includes(q)||r.notes.toLowerCase().includes(q))&&(!mat||r.material===mat));
-  if(sort==='asc')rows.sort((a,b)=>a.date.localeCompare(b.date));
-  else if(sort==='desc')rows.sort((a,b)=>b.date.localeCompare(a.date));
+  const q=document.getElementById('c-search').value.toLowerCase();
+  const mat=document.getElementById('c-mat').value;
+  const sort=document.getElementById('c-sort').value;
+  let rows=all.filter(r=>
+    (!q||(r.name+' '+r.notes).toLowerCase().includes(q))&&
+    (!mat||r.material===mat)
+  );
+  if(sort==='asc')rows.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  else if(sort==='desc')rows.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
   else rows.sort((a,b)=>a.name.localeCompare(b.name));
+
   const el=document.getElementById('gallery');
   if(!rows.length){el.className='empty';el.textContent='No artworks found.';return;}
   el.className='grid';
   el.innerHTML=rows.map(r=>{
-    const thumb=getDriveThumb(r.photo);
+    const t=thumb(r.photo);
+    const row=r._row;
     return`<div class="card">
-      ${thumb?`<img class="card-img" src="${esc(thumb)}" alt="${esc(r.name)}" onerror="this.outerHTML='<div class=card-img-placeholder>🎨</div>'">`
-             :`<div class="card-img-placeholder">🎨</div>`}
+      ${t
+        ?`<img class="card-img" src="${esc(t)}" alt="${esc(r.name)}" onclick="openLightbox('${esc(t)}')" onerror="this.outerHTML='<div class=card-placeholder>🎨</div>'">`
+        :`<div class="card-placeholder">🎨</div>`}
       <div class="card-body">
         <div class="card-name">${esc(r.name)}</div>
         <div class="card-date">${fmtDate(r.date)}</div>
         ${r.material?`<span class="badge">${esc(r.material)}</span>`:''}
         ${r.notes?`<div class="card-notes">${esc(r.notes)}</div>`:''}
         <div class="card-actions">
-          <button onclick="openEdit(${r._row})">✏️ Edit</button>
-          <button class="del" onclick="deleteArtwork(${r._row},'${esc(r.name)}')">🗑 Delete</button>
+          <button class="btn-sm" onclick="openEdit(${row})">✏️ Edit</button>
+          <button class="btn-sm danger" onclick="delArtwork(${row},'${esc(r.name).replace(/'/g,"\\'")}')">🗑 Delete</button>
         </div>
       </div></div>`;
   }).join('');
 }
-function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 
-// ── Modal ────────────────────────────────────────────────
-function openModal(){
-  document.getElementById('overlay').classList.remove('hidden');
-  document.getElementById('f-date').value=new Date().toISOString().split('T')[0];
+// ── Lightbox ─────────────────────────────────────────────
+function openLightbox(src){document.getElementById('lb-img').src=src;document.getElementById('lightbox').classList.remove('hidden');}
+function closeLightbox(){document.getElementById('lightbox').classList.add('hidden');}
+
+// ── Add modal ────────────────────────────────────────────
+function openAdd(){
+  document.getElementById('add-overlay').classList.remove('hidden');
+  document.getElementById('a-date').value=new Date().toISOString().split('T')[0];
 }
-function closeModal(){
-  document.getElementById('overlay').classList.add('hidden');
-  resetPhoto();
-  ['f-name','f-notes'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-material').value='';
-  document.getElementById('form-msg').innerHTML='';
-}
-
-// ── Photo & Crop ─────────────────────────────────────────
-function show(id){['step-pick','step-crop','step-preview'].forEach(s=>document.getElementById(s).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');}
-
-function onPhotoSelected(input){
-  const file=input.files[0];if(!file)return;
-  photoName=file.name;rotation=0;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const img=new Image();
-    img.onload=()=>{origImage=img;initCrop();};
-    img.src=e.target.result;
-  };
-  reader.readAsDataURL(file);
+function closeAdd(){
+  document.getElementById('add-overlay').classList.add('hidden');
+  clearPhoto();
+  ['a-name','a-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('a-mat').value='';
+  document.getElementById('a-msg').innerHTML='';
 }
 
-function getRotatedSize(){
-  const sw=Math.abs(rotation)===90?origImage.height:origImage.width;
-  const sh=Math.abs(rotation)===90?origImage.width:origImage.height;
-  return{w:sw,h:sh};
+// ── Crop engine ───────────────────────────────────────────
+function onPhoto(input){
+  const f=input.files[0];if(!f)return;
+  photoName=f.name;rotation=0;croppedB64=null;
+  new Promise(res=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.readAsDataURL(f);})
+    .then(src=>{const img=new Image();img.onload=()=>{origImg=img;initCropUI();};img.src=src;});
 }
 
-function initCrop(){
-  show('step-crop');
-  drawCanvas();
-  resetCrop();
-  setupEvents();
+function rotSize(){return Math.abs(rotation)===90?{w:origImg.height,h:origImg.width}:{w:origImg.width,h:origImg.height};}
+
+function initCropUI(){
+  showStep('a-step-crop');
+  drawFull();
+  resetCropBox();
+  bindCropEvents();
 }
 
-function drawCanvas(){
-  const canvas=document.getElementById('crop-canvas');
-  const wrap=document.getElementById('crop-wrap');
-  const maxW=Math.min(wrap.clientWidth||400,500);
-  const {w,h}=getRotatedSize();
-  const scale=maxW/w;
-  canvas.width=Math.round(w*scale);
-  canvas.height=Math.round(h*scale);
+function drawFull(){
+  const canvas=document.getElementById('a-canvas');
+  const box=document.getElementById('a-crop-box');
+  const maxW=Math.min(box.clientWidth||440,500);
+  const {w,h}=rotSize();
+  const sc=maxW/w;
+  canvas.width=Math.round(w*sc);
+  canvas.height=Math.round(h*sc);
   const ctx=canvas.getContext('2d');
-  ctx.save();
-  ctx.translate(canvas.width/2,canvas.height/2);
-  ctx.rotate(rotation*Math.PI/180);
-  ctx.drawImage(origImage,-origImage.width*scale/2,-origImage.height*scale/2,origImage.width*scale,origImage.height*scale);
+  ctx.save();ctx.translate(canvas.width/2,canvas.height/2);ctx.rotate(rotation*Math.PI/180);
+  ctx.drawImage(origImg,-origImg.width*sc/2,-origImg.height*sc/2,origImg.width*sc,origImg.height*sc);
   ctx.restore();
 }
 
-function redraw(){
-  drawCanvas();
-  const canvas=document.getElementById('crop-canvas');
+function drawCrop(){
+  drawFull();
+  const canvas=document.getElementById('a-canvas');
   const ctx=canvas.getContext('2d');
-  // Darken outside crop
-  ctx.fillStyle='rgba(0,0,0,0.5)';
-  ctx.fillRect(0,0,canvas.width,cb.y);
-  ctx.fillRect(0,cb.y+cb.h,canvas.width,canvas.height-cb.y-cb.h);
-  ctx.fillRect(0,cb.y,cb.x,cb.h);
-  ctx.fillRect(cb.x+cb.w,cb.y,canvas.width-cb.x-cb.w,cb.h);
-  // Border
-  ctx.strokeStyle='#fff';ctx.lineWidth=2;
-  ctx.strokeRect(cb.x,cb.y,cb.w,cb.h);
-  // Rule of thirds
-  ctx.strokeStyle='rgba(255,255,255,0.3)';ctx.lineWidth=1;
+  const {x,y,w,h}=cb;
+  // dim outside
+  ctx.fillStyle='rgba(0,0,0,.48)';
+  ctx.fillRect(0,0,canvas.width,y);
+  ctx.fillRect(0,y+h,canvas.width,canvas.height-y-h);
+  ctx.fillRect(0,y,x,h);
+  ctx.fillRect(x+w,y,canvas.width-x-w,h);
+  // border
+  ctx.strokeStyle='#fff';ctx.lineWidth=2;ctx.strokeRect(x,y,w,h);
+  // thirds
+  ctx.strokeStyle='rgba(255,255,255,.25)';ctx.lineWidth=1;
   [1/3,2/3].forEach(f=>{
-    ctx.beginPath();ctx.moveTo(cb.x+cb.w*f,cb.y);ctx.lineTo(cb.x+cb.w*f,cb.y+cb.h);ctx.stroke();
-    ctx.beginPath();ctx.moveTo(cb.x,cb.y+cb.h*f);ctx.lineTo(cb.x+cb.w,cb.y+cb.h*f);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x+w*f,y);ctx.lineTo(x+w*f,y+h);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(x,y+h*f);ctx.lineTo(x+w,y+h*f);ctx.stroke();
   });
-  // Corner handles — big for mobile
-  const handles=[[cb.x,cb.y],[cb.x+cb.w,cb.y],[cb.x,cb.y+cb.h],[cb.x+cb.w,cb.y+cb.h]];
-  handles.forEach(([hx,hy])=>{
-    ctx.beginPath();ctx.arc(hx,hy,14,0,Math.PI*2);
-    ctx.fillStyle='rgba(255,255,255,0.9)';ctx.fill();
-    ctx.strokeStyle='#888';ctx.lineWidth=1;ctx.stroke();
+  // corner handles
+  [[x,y],[x+w,y],[x,y+h],[x+w,y+h]].forEach(([hx,hy])=>{
+    ctx.beginPath();ctx.arc(hx,hy,16,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,255,255,.92)';ctx.fill();
+    ctx.strokeStyle='#aaa';ctx.lineWidth=1;ctx.stroke();
   });
-  // Edge midpoints
-  const mids=[[cb.x+cb.w/2,cb.y],[cb.x+cb.w/2,cb.y+cb.h],[cb.x,cb.y+cb.h/2],[cb.x+cb.w,cb.y+cb.h/2]];
-  mids.forEach(([mx,my])=>{
-    ctx.beginPath();ctx.arc(mx,my,8,0,Math.PI*2);
-    ctx.fillStyle='rgba(255,255,255,0.7)';ctx.fill();
+  // edge handles
+  [[x+w/2,y],[x+w/2,y+h],[x,y+h/2],[x+w,y+h/2]].forEach(([hx,hy])=>{
+    ctx.beginPath();ctx.arc(hx,hy,9,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,255,255,.75)';ctx.fill();
   });
 }
 
-function resetCrop(){
-  const canvas=document.getElementById('crop-canvas');
-  const pad=canvas.width*0.05;
-  cb={x:pad,y:pad,w:canvas.width-pad*2,h:canvas.height-pad*2};
-  redraw();
+function resetCropBox(){
+  const canvas=document.getElementById('a-canvas');
+  const p=Math.min(canvas.width,canvas.height)*0.04;
+  cb={x:p,y:p,w:canvas.width-p*2,h:canvas.height-p*2};
+  drawCrop();
 }
 
-function rotate(deg){
-  rotation=(rotation+deg+360)%360;
-  initCrop();
-}
+function rotateImg(deg){rotation=(rotation+deg+360)%360;initCropUI();}
 
-// Touch/mouse events
-function getPos(e,canvas){
+function getCanvasXY(e,canvas){
   const r=canvas.getBoundingClientRect();
-  const scaleX=canvas.width/r.width;
-  const scaleY=canvas.height/r.height;
+  const sx=canvas.width/r.width,sy=canvas.height/r.height;
   const src=e.touches?e.touches[0]:e;
-  return{x:(src.clientX-r.left)*scaleX,y:(src.clientY-r.top)*scaleY};
+  return{x:(src.clientX-r.left)*sx,y:(src.clientY-r.top)*sy};
 }
 
-function hitTest(px,py){
-  const T=20; // touch tolerance px
-  const corners=[
-    {id:'tl',x:cb.x,y:cb.y},{id:'tr',x:cb.x+cb.w,y:cb.y},
-    {id:'bl',x:cb.x,y:cb.y+cb.h},{id:'br',x:cb.x+cb.w,y:cb.y+cb.h}
+function hitHandle(px,py){
+  const T=24,{x,y,w,h}=cb;
+  const pts=[
+    {id:'tl',x,y},{id:'tr',x:x+w,y},{id:'bl',x,y:y+h},{id:'br',x:x+w,y:y+h},
+    {id:'mt',x:x+w/2,y},{id:'mb',x:x+w/2,y:y+h},{id:'ml',x,y:y+h/2},{id:'mr',x:x+w,y:y+h/2}
   ];
-  for(const c of corners) if(Math.hypot(px-c.x,py-c.y)<T) return c.id;
-  const mids=[
-    {id:'mt',x:cb.x+cb.w/2,y:cb.y},{id:'mb',x:cb.x+cb.w/2,y:cb.y+cb.h},
-    {id:'ml',x:cb.x,y:cb.y+cb.h/2},{id:'mr',x:cb.x+cb.w,y:cb.y+cb.h/2}
-  ];
-  for(const m of mids) if(Math.hypot(px-m.x,py-m.y)<T) return m.id;
-  if(px>cb.x&&px<cb.x+cb.w&&py>cb.y&&py<cb.y+cb.h) return 'move';
+  for(const p of pts)if(Math.hypot(px-p.x,py-p.y)<T)return p.id;
+  if(px>x&&px<x+w&&py>y&&py<y+h)return'move';
   return null;
 }
 
-function setupEvents(){
-  const canvas=document.getElementById('crop-canvas');
+function bindCropEvents(){
+  const canvas=document.getElementById('a-canvas');
   canvas.onmousedown=canvas.ontouchstart=e=>{
     e.preventDefault();
-    const pos=getPos(e,canvas);
-    drag=hitTest(pos.x,pos.y);
-    dragOrig={...pos};cbOrig={...cb};
+    const p=getCanvasXY(e,canvas);
+    drag=hitHandle(p.x,p.y);
+    dragOrig={...p};cbOrig={...cb};
   };
   canvas.onmousemove=canvas.ontouchmove=e=>{
     if(!drag)return;e.preventDefault();
-    const pos=getPos(e,canvas);
-    const dx=pos.x-dragOrig.x,dy=pos.y-dragOrig.y;
-    const W=canvas.width,H=canvas.height;
+    const p=getCanvasXY(e,canvas);
+    const dx=p.x-dragOrig.x,dy=p.y-dragOrig.y;
+    const CW=canvas.width,CH=canvas.height;
     let{x,y,w,h}=cbOrig;
-    if(drag==='move'){x=Math.max(0,Math.min(W-w,x+dx));y=Math.max(0,Math.min(H-h,y+dy));}
-    else if(drag==='tl'){const nw=Math.max(MIN,w-dx),nh=Math.max(MIN,h-dy);x=x+w-nw;y=y+h-nh;w=nw;h=nh;}
-    else if(drag==='tr'){w=Math.max(MIN,w+dx);const nh=Math.max(MIN,h-dy);y=y+h-nh;h=nh;}
-    else if(drag==='bl'){const nw=Math.max(MIN,w-dx);x=x+w-nw;w=nw;h=Math.max(MIN,h+dy);}
-    else if(drag==='br'){w=Math.max(MIN,w+dx);h=Math.max(MIN,h+dy);}
-    else if(drag==='mt'){const nh=Math.max(MIN,h-dy);y=y+h-nh;h=nh;}
-    else if(drag==='mb'){h=Math.max(MIN,h+dy);}
-    else if(drag==='ml'){const nw=Math.max(MIN,w-dx);x=x+w-nw;w=nw;}
-    else if(drag==='mr'){w=Math.max(MIN,w+dx);}
-    x=Math.max(0,Math.min(W-w,x));y=Math.max(0,Math.min(H-h,y));
-    w=Math.min(w,W-x);h=Math.min(h,H-y);
-    cb={x,y,w,h};redraw();
+    if(drag==='move'){x=Math.max(0,Math.min(CW-w,x+dx));y=Math.max(0,Math.min(CH-h,y+dy));}
+    else if(drag==='tl'){const nw=Math.max(HMIN,w-dx),nh=Math.max(HMIN,h-dy);x+=w-nw;y+=h-nh;w=nw;h=nh;}
+    else if(drag==='tr'){w=Math.max(HMIN,w+dx);const nh=Math.max(HMIN,h-dy);y+=h-nh;h=nh;}
+    else if(drag==='bl'){const nw=Math.max(HMIN,w-dx);x+=w-nw;w=nw;h=Math.max(HMIN,h+dy);}
+    else if(drag==='br'){w=Math.max(HMIN,w+dx);h=Math.max(HMIN,h+dy);}
+    else if(drag==='mt'){const nh=Math.max(HMIN,h-dy);y+=h-nh;h=nh;}
+    else if(drag==='mb'){h=Math.max(HMIN,h+dy);}
+    else if(drag==='ml'){const nw=Math.max(HMIN,w-dx);x+=w-nw;w=nw;}
+    else if(drag==='mr'){w=Math.max(HMIN,w+dx);}
+    x=Math.max(0,Math.min(CW-w,x));y=Math.max(0,Math.min(CH-h,y));
+    w=Math.min(w,CW-x);h=Math.min(h,CH-y);
+    cb={x,y,w,h};drawCrop();
   };
   canvas.onmouseup=canvas.ontouchend=()=>{drag=null;};
 }
 
 function applyCrop(){
-  const canvas=document.getElementById('crop-canvas');
-  const{w:rw,h:rh}=getRotatedSize();
-  const scaleX=rw/canvas.width;
-  const scaleY=rh/canvas.height;
-  const sx=cb.x*scaleX,sy=cb.y*scaleY;
-  const sw=cb.w*scaleX,sh=cb.h*scaleY;
-  // Draw rotated+cropped to offscreen
-  const off=document.createElement('canvas');
-  const maxW=Math.min(sw,1200);
-  const s=maxW/sw;
-  off.width=Math.round(sw*s);off.height=Math.round(sh*s);
-  const ctx=off.getContext('2d');
-  ctx.save();
-  ctx.translate(off.width/2,off.height/2);
-  ctx.rotate(rotation*Math.PI/180);
-  const iw=origImage.width*s,ih=origImage.height*s;
-  const ox=Math.abs(rotation)===90?sy:sx;
-  const oy=Math.abs(rotation)===90?sx:sy;
-  // Simpler: just draw the rotated full image and crop
+  const canvas=document.getElementById('a-canvas');
+  const {w:rw,h:rh}=rotSize();
+  const scX=rw/canvas.width,scY=rh/canvas.height;
+  // Build rotated full image at source res
   const tmp=document.createElement('canvas');
-  const{w:tw,h:th}=getRotatedSize();
-  const ts=Math.min(1200/tw,1200/th,1);
-  tmp.width=Math.round(tw*ts);tmp.height=Math.round(th*ts);
+  const ts=Math.min(1,1800/Math.max(rw,rh));
+  tmp.width=Math.round(rw*ts);tmp.height=Math.round(rh*ts);
   const tc=tmp.getContext('2d');
-  tc.save();tc.translate(tmp.width/2,tmp.height/2);
-  tc.rotate(rotation*Math.PI/180);
-  tc.drawImage(origImage,-origImage.width*ts/2,-origImage.height*ts/2,origImage.width*ts,origImage.height*ts);
+  tc.save();tc.translate(tmp.width/2,tmp.height/2);tc.rotate(rotation*Math.PI/180);
+  tc.drawImage(origImg,-origImg.width*ts/2,-origImg.height*ts/2,origImg.width*ts,origImg.height*ts);
   tc.restore();
-  // Now crop from tmp
-  const final=document.createElement('canvas');
+  // Crop from rotated
   const fx=cb.x/canvas.width*tmp.width;
   const fy=cb.y/canvas.height*tmp.height;
   const fw=cb.w/canvas.width*tmp.width;
   const fh=cb.h/canvas.height*tmp.height;
-  const fMax=Math.min(1200/fw,1200/fh,1);
-  final.width=Math.round(fw*fMax);final.height=Math.round(fh*fMax);
-  final.getContext('2d').drawImage(tmp,fx,fy,fw,fh,0,0,final.width,final.height);
-  croppedBase64=final.toDataURL('image/jpeg',0.85).split(',')[1];
-  document.getElementById('preview-img').src='data:image/jpeg;base64,'+croppedBase64;
-  show('step-preview');
+  const maxOut=1200,sc=Math.min(1,maxOut/Math.max(fw,fh));
+  const out=document.createElement('canvas');
+  out.width=Math.round(fw*sc);out.height=Math.round(fh*sc);
+  out.getContext('2d').drawImage(tmp,fx,fy,fw,fh,0,0,out.width,out.height);
+  croppedB64=out.toDataURL('image/jpeg',.85).split(',')[1];
+  document.getElementById('a-preview').src='data:image/jpeg;base64,'+croppedB64;
+  showStep('a-step-preview');
 }
 
-function reCrop(){croppedBase64=null;show('step-crop');redraw();}
-function resetPhoto(){
-  croppedBase64=null;origImage=null;rotation=0;drag=null;
-  document.getElementById('f-photo').value='';
-  show('step-pick');
+function reCrop(){croppedB64=null;showStep('a-step-crop');drawCrop();}
+function clearPhoto(){
+  croppedB64=null;origImg=null;rotation=0;drag=null;
+  document.getElementById('a-photo').value='';
+  showStep('a-step-pick');
 }
 
-// ── Edit & Delete ─────────────────────────────────────────
+// ── Submit new artwork ────────────────────────────────────
+async function submitAdd(){
+  const name=document.getElementById('a-name').value.trim();
+  const date=document.getElementById('a-date').value;
+  const material=document.getElementById('a-mat').value;
+  const notes=document.getElementById('a-notes').value.trim();
+  const msg=document.getElementById('a-msg');
+  if(!name){msg.innerHTML='<div class="msg-err">Please enter a project name.</div>';return;}
+  const btn=document.getElementById('a-btn');
+  btn.textContent='Saving…';btn.disabled=true;msg.innerHTML='';
+  try{
+    const payload={action:'add',name,date,material,notes};
+    if(croppedB64){payload.photoData=croppedB64;payload.photoName=photoName;payload.photoMime='image/jpeg';}
+    const res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const result=await res.json();
+    if(result.success){msg.innerHTML='<div class="msg-ok">Saved! 🎨</div>';setTimeout(()=>{closeAdd();load();},1200);}
+    else msg.innerHTML=`<div class="msg-err">Error: ${result.error||'Unknown'}</div>`;
+  }catch(e){msg.innerHTML=`<div class="msg-err">Failed: ${e.message}</div>`;}
+  btn.textContent='Save artwork';btn.disabled=false;
+}
+
+// ── Edit ─────────────────────────────────────────────────
 function openEdit(row){
   const r=all.find(x=>x._row===row);
   if(!r)return;
   document.getElementById('e-row').value=row;
   document.getElementById('e-name').value=r.name;
-  document.getElementById('e-date').value=r.date?new Date(r.date).toISOString().split('T')[0]:'';
-  document.getElementById('e-material').value=r.material||'';
+  document.getElementById('e-date').value=toInputDate(r.date);
+  document.getElementById('e-mat').value=r.material||'';
   document.getElementById('e-notes').value=r.notes||'';
-  document.getElementById('edit-msg').innerHTML='';
+  document.getElementById('e-msg').innerHTML='';
   document.getElementById('edit-overlay').classList.remove('hidden');
 }
-function closeEdit(){
-  document.getElementById('edit-overlay').classList.add('hidden');
-}
+function closeEdit(){document.getElementById('edit-overlay').classList.add('hidden');}
 async function saveEdit(){
   const row=parseInt(document.getElementById('e-row').value);
   const name=document.getElementById('e-name').value.trim();
   const date=document.getElementById('e-date').value;
-  const material=document.getElementById('e-material').value;
+  const material=document.getElementById('e-mat').value;
   const notes=document.getElementById('e-notes').value.trim();
-  const msg=document.getElementById('edit-msg');
-  if(!name){msg.innerHTML='<div class="error-msg">Name is required.</div>';return;}
-  const btn=document.getElementById('edit-btn');
+  const msg=document.getElementById('e-msg');
+  if(!name){msg.innerHTML='<div class="msg-err">Name is required.</div>';return;}
+  const btn=document.getElementById('e-btn');
   btn.textContent='Saving…';btn.disabled=true;
   try{
     const res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:'edit',row,name,date,material,notes})});
     const result=await res.json();
-    if(result.success){
-      closeEdit();load();
-    }else{
-      msg.innerHTML=`<div class="error-msg">${result.error||'Error saving'}</div>`;
-    }
-  }catch(e){
-    msg.innerHTML=`<div class="error-msg">Failed: ${e.message}</div>`;
-  }
+    if(result.success){closeEdit();load();}
+    else msg.innerHTML=`<div class="msg-err">${result.error||'Error'}</div>`;
+  }catch(e){msg.innerHTML=`<div class="msg-err">Failed: ${e.message}</div>`;}
   btn.textContent='Save changes';btn.disabled=false;
 }
-async function deleteArtwork(row,name){
-  if(!confirm(`Delete "${name}"? This cannot be undone.`))return;
+
+// ── Delete ────────────────────────────────────────────────
+async function delArtwork(row,name){
+  if(!confirm(`Delete "${name}"?\nThis cannot be undone.`))return;
   try{
     const res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({action:'delete',row})});
     const result=await res.json();
     if(result.success)load();
-    else alert('Error deleting: '+(result.error||'Unknown error'));
-  }catch(e){
-    alert('Failed to delete: '+e.message);
-  }
-}
-
-// ── Submit ───────────────────────────────────────────────
-async function submitArtwork(){
-  const name=document.getElementById('f-name').value.trim();
-  const date=document.getElementById('f-date').value;
-  const material=document.getElementById('f-material').value;
-  const notes=document.getElementById('f-notes').value.trim();
-  const msg=document.getElementById('form-msg');
-  if(!name){msg.innerHTML='<div class="error-msg">Please enter a project name.</div>';return;}
-  const btn=document.getElementById('submit-btn');
-  btn.textContent='Saving…';btn.disabled=true;msg.innerHTML='';
-  try{
-    const payload={name,date,material,notes};
-    if(croppedBase64){payload.photoData=croppedBase64;payload.photoName=photoName;payload.photoMime='image/jpeg';}
-    const res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
-    const result=await res.json();
-    if(result.success){
-      msg.innerHTML='<div class="success-msg">Artwork saved! 🎨</div>';
-      setTimeout(()=>{closeModal();load();},1500);
-    }else{
-      msg.innerHTML=`<div class="error-msg">Error: ${result.error||'Unknown error'}</div>`;
-    }
-  }catch(e){
-    msg.innerHTML=`<div class="error-msg">Failed to save: ${e.message}</div>`;
-  }
-  btn.textContent='Save artwork';btn.disabled=false;
+    else alert('Error: '+(result.error||'Unknown'));
+  }catch(e){alert('Failed: '+e.message);}
 }
 
 load();
