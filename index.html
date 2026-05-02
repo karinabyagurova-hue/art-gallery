@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>Arya's Art Gallery</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -13,7 +13,9 @@ h1{font-size:22px;font-weight:500}
 .btn:hover{background:#333}
 .btn-outline{background:#fff;color:#1a1a1a;border:1px solid #ddd}
 .btn-outline:hover{background:#f0f0f0}
-.btn-refresh{background:#fff;color:#1a1a1a;border:1px solid #ddd;padding:8px 12px;border-radius:8px;font-size:14px;cursor:pointer}
+.btn-sm{padding:8px 12px;border-radius:8px;border:1px solid #ddd;background:#fff;font-size:13px;cursor:pointer;color:#1a1a1a}
+.btn-sm:hover{background:#f0f0f0}
+.btn-sm.primary{background:#1a1a1a;color:#fff;border:none}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:1.5rem}
 .stat{background:#fff;border:1px solid #eee;border-radius:8px;padding:1rem;text-align:center}
 .stat-num{font-size:24px;font-weight:500}
@@ -30,8 +32,7 @@ input[type=text]{flex:1;min-width:160px}
 .card-date{font-size:13px;color:#888}
 .badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;background:#f0f0f0;color:#555;border:1px solid #e0e0e0;width:fit-content}
 .card-notes{font-size:13px;color:#666;line-height:1.5}
-.empty{text-align:center;color:#999;padding:3rem;font-size:15px}
-.loading{text-align:center;padding:3rem;color:#999}
+.empty,.loading{text-align:center;color:#999;padding:3rem;font-size:15px}
 
 /* Modal */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem}
@@ -41,7 +42,7 @@ input[type=text]{flex:1;min-width:160px}
 .form-group label{display:block;font-size:13px;color:#666;margin-bottom:6px}
 .form-group input,.form-group select,.form-group textarea{width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;outline:none}
 .form-group textarea{resize:vertical;min-height:70px}
-.photo-upload{border:2px dashed #ddd;border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer}
+.photo-upload{border:2px dashed #ddd;border-radius:8px;padding:1.5rem;text-align:center;cursor:pointer;color:#666;font-size:14px}
 .photo-upload:hover{border-color:#aaa}
 .photo-upload input{display:none}
 .form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:1.25rem}
@@ -49,16 +50,17 @@ input[type=text]{flex:1;min-width:160px}
 .success-msg{background:#f0faf4;color:#1a7a4a;padding:.75rem;border-radius:8px;font-size:14px;margin-top:.75rem;text-align:center}
 .error-msg{background:#fdf0f0;color:#c0392b;padding:.75rem;border-radius:8px;font-size:14px;margin-top:.75rem;text-align:center}
 
-/* Crop tool */
-.crop-container{position:relative;width:100%;background:#000;border-radius:8px;overflow:hidden;touch-action:none;margin-top:.75rem}
-.crop-container canvas{display:block;width:100%;height:auto}
-.crop-overlay{position:absolute;inset:0;pointer-events:none}
-.crop-box{position:absolute;border:2px solid #fff;box-shadow:0 0 0 9999px rgba(0,0,0,0.5);cursor:move}
-.crop-handle{position:absolute;width:22px;height:22px;background:#fff;border-radius:50%;transform:translate(-50%,-50%);pointer-events:all;cursor:pointer}
-.crop-actions{display:flex;gap:8px;margin-top:.5rem}
-.crop-actions button{flex:1;padding:8px;border-radius:8px;border:1px solid #ddd;background:#fff;font-size:13px;cursor:pointer}
-.crop-actions button.primary{background:#1a1a1a;color:#fff;border:none}
-.preview-thumb{width:100%;border-radius:8px;margin-top:.5rem;display:block}
+/* Crop */
+.crop-wrapper{margin-top:.75rem;border-radius:10px;overflow:hidden;background:#111;position:relative}
+.crop-canvas-wrap{position:relative;width:100%;overflow:hidden;touch-action:none;user-select:none}
+.crop-canvas-wrap canvas{display:block;width:100%;height:auto}
+.crop-toolbar{display:flex;gap:6px;padding:.5rem;background:#111;flex-wrap:wrap}
+.crop-toolbar button{flex:1;min-width:80px;padding:8px 4px;border-radius:7px;border:1px solid #444;background:#222;color:#fff;font-size:13px;cursor:pointer}
+.crop-toolbar button:hover{background:#333}
+.crop-toolbar button.primary{background:#fff;color:#111;border-color:#fff}
+.preview-wrap{margin-top:.5rem}
+.preview-wrap img{width:100%;border-radius:8px;display:block}
+.preview-actions{display:flex;gap:6px;margin-top:.5rem}
 </style>
 </head>
 <body>
@@ -66,7 +68,7 @@ input[type=text]{flex:1;min-width:160px}
 <div class="header">
   <h1>🎨 Arya's art gallery</h1>
   <div style="display:flex;gap:8px">
-    <button class="btn-refresh" onclick="load()">↻ Refresh</button>
+    <button class="btn-sm" onclick="load()">↻ Refresh</button>
     <button class="btn" onclick="openModal()">+ Add artwork</button>
   </div>
 </div>
@@ -91,7 +93,7 @@ input[type=text]{flex:1;min-width:160px}
 
 <!-- Modal -->
 <div class="overlay hidden" id="overlay">
-  <div class="modal">
+  <div class="modal" id="modal-inner">
     <h2>Add new artwork</h2>
     <div class="form-group">
       <label>Project name</label>
@@ -105,54 +107,53 @@ input[type=text]{flex:1;min-width:160px}
       <label>Materials used</label>
       <select id="f-material">
         <option value="">Select material…</option>
-        <option>acrylic</option>
-        <option>pencil</option>
-        <option>felt pen</option>
-        <option>pen</option>
-        <option>watercolor</option>
-        <option>paper</option>
-        <option>clay</option>
-        <option>other</option>
+        <option>acrylic</option><option>pencil</option><option>felt pen</option>
+        <option>pen</option><option>watercolor</option><option>paper</option>
+        <option>clay</option><option>other</option>
       </select>
     </div>
     <div class="form-group">
       <label>Notes (optional)</label>
-      <textarea id="f-notes" placeholder="e.g. Made at art class, theme was animals…"></textarea>
+      <textarea id="f-notes" placeholder="e.g. Made at art class…"></textarea>
     </div>
 
-    <!-- Photo section -->
     <div class="form-group">
       <label>Photo</label>
-      <div id="upload-area">
+
+      <!-- Step 1: pick photo -->
+      <div id="step-pick">
         <div class="photo-upload" onclick="document.getElementById('f-photo').click()">
-          📷 Tap to take a photo or choose from gallery
+          📷 Take a photo or choose from gallery
           <input type="file" id="f-photo" accept="image/*,image/heic,image/heif" onchange="onPhotoSelected(this)">
         </div>
       </div>
 
-      <!-- Crop tool (hidden until photo selected) -->
-      <div id="crop-area" class="hidden">
-        <div class="crop-container" id="crop-container">
-          <canvas id="crop-canvas"></canvas>
-          <div id="crop-box" class="crop-box">
-            <div class="crop-handle" id="h-tl" style="top:0;left:0"></div>
-            <div class="crop-handle" id="h-tr" style="top:0;left:100%"></div>
-            <div class="crop-handle" id="h-bl" style="top:100%;left:0"></div>
-            <div class="crop-handle" id="h-br" style="top:100%;left:100%"></div>
+      <!-- Step 2: crop -->
+      <div id="step-crop" class="hidden">
+        <div class="crop-wrapper">
+          <div class="crop-canvas-wrap" id="crop-wrap">
+            <canvas id="crop-canvas"></canvas>
+          </div>
+          <div class="crop-toolbar">
+            <button onclick="rotate(-90)">↺ Rotate L</button>
+            <button onclick="rotate(90)">↻ Rotate R</button>
+            <button onclick="resetCrop()">⊡ Reset crop</button>
+            <button class="primary" onclick="applyCrop()">✓ Use crop</button>
           </div>
         </div>
-        <div class="crop-actions">
-          <button onclick="resetPhoto()">↩ Change photo</button>
-          <button class="primary" onclick="applyCrop()">✓ Use this crop</button>
+        <div style="margin-top:6px">
+          <button class="btn-sm" onclick="resetPhoto()" style="width:100%">↩ Change photo</button>
         </div>
       </div>
 
-      <!-- Preview after crop -->
-      <div id="preview-area" class="hidden">
-        <img id="preview-img" class="preview-thumb">
-        <div class="crop-actions">
-          <button onclick="resetPhoto()">↩ Change photo</button>
-          <button onclick="reCrop()">✂ Re-crop</button>
+      <!-- Step 3: preview -->
+      <div id="step-preview" class="hidden">
+        <div class="preview-wrap">
+          <img id="preview-img">
+        </div>
+        <div class="preview-actions">
+          <button class="btn-sm" onclick="resetPhoto()" style="flex:1">↩ Change photo</button>
+          <button class="btn-sm" onclick="reCrop()" style="flex:1">✂ Re-crop</button>
         </div>
       </div>
     </div>
@@ -166,33 +167,39 @@ input[type=text]{flex:1;min-width:160px}
 </div>
 
 <script>
-const API = '/api/proxy';
-let all = [];
-let croppedBase64 = null, photoName = 'artwork.jpg', photoMime = 'image/jpeg';
+const API='/api/proxy';
+let all=[];
+let origImage=null, rotation=0;
+let croppedBase64=null;
+let photoName='artwork.jpg';
+
+// crop box in canvas-pixel coords
+let cb={x:0,y:0,w:0,h:0};
+let drag=null, dragOrig=null, cbOrig=null;
+const MIN=40;
 
 // ── Gallery ──────────────────────────────────────────────
 function getVal(row,...keys){
   for(const k of keys){
-    const f=Object.keys(row).find(rk=>rk.replace(/"/g,'').trim().toLowerCase()===k.toLowerCase());
+    const f=Object.keys(row).find(r=>r.replace(/"/g,'').trim().toLowerCase()===k.toLowerCase());
     if(f&&row[f])return row[f];
   }return '';
 }
 function fmtDate(d){
-  if(!d)return '';
-  const dt=new Date(d);
+  if(!d)return '';const dt=new Date(d);
   if(isNaN(dt))return d;
   return dt.toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});
 }
 function getDriveThumb(url){
   if(!url)return null;
   const m=url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-  if(m)return `https://drive.google.com/thumbnail?id=${m[1]}&sz=w400`;
+  if(m)return`https://drive.google.com/thumbnail?id=${m[1]}&sz=w400`;
   if(url.includes('thumbnail'))return url;
   return null;
 }
 async function load(){
   const el=document.getElementById('gallery');
-  el.className='loading'; el.textContent='Loading artwork…';
+  el.className='loading';el.textContent='Loading artwork…';
   try{
     const res=await fetch(API);
     const data=await res.json();
@@ -203,7 +210,7 @@ async function load(){
       notes:getVal(r,'Notes','notes'),
       photo:getVal(r,'Photo URL','photo url','photo of artwork','Photo of Artwork','photo')||''
     })).filter(r=>r.name||r.date);
-    updateStats(); populateMaterials(); render();
+    updateStats();populateMaterials();render();
   }catch(e){
     el.innerHTML=`<div class="empty">Could not load. Try refreshing.<br><small>${e.message}</small></div>`;
   }
@@ -225,10 +232,7 @@ function render(){
   const q=document.getElementById('search').value.toLowerCase();
   const mat=document.getElementById('filter-mat').value;
   const sort=document.getElementById('sort').value;
-  let rows=all.filter(r=>{
-    const mq=!q||r.name.toLowerCase().includes(q)||r.notes.toLowerCase().includes(q);
-    return mq&&(!mat||r.material===mat);
-  });
+  let rows=all.filter(r=>(!q||r.name.toLowerCase().includes(q)||r.notes.toLowerCase().includes(q))&&(!mat||r.material===mat));
   if(sort==='asc')rows.sort((a,b)=>a.date.localeCompare(b.date));
   else if(sort==='desc')rows.sort((a,b)=>b.date.localeCompare(a.date));
   else rows.sort((a,b)=>a.name.localeCompare(b.name));
@@ -237,7 +241,7 @@ function render(){
   el.className='grid';
   el.innerHTML=rows.map(r=>{
     const thumb=getDriveThumb(r.photo);
-    return `<div class="card">
+    return`<div class="card">
       ${thumb?`<img class="card-img" src="${esc(thumb)}" alt="${esc(r.name)}" onerror="this.outerHTML='<div class=card-img-placeholder>🎨</div>'">`
              :`<div class="card-img-placeholder">🎨</div>`}
       <div class="card-body">
@@ -263,141 +267,199 @@ function closeModal(){
   document.getElementById('form-msg').innerHTML='';
 }
 
-// ── Photo / Crop ─────────────────────────────────────────
-let origImage=null, cropImg=null;
-let box={x:10,y:10,w:80,h:80}; // percent
-let dragging=null, dragStart=null, boxStart=null;
+// ── Photo & Crop ─────────────────────────────────────────
+function show(id){['step-pick','step-crop','step-preview'].forEach(s=>document.getElementById(s).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');}
 
 function onPhotoSelected(input){
-  const file=input.files[0]; if(!file)return;
-  photoName=file.name; photoMime='image/jpeg';
+  const file=input.files[0];if(!file)return;
+  photoName=file.name;rotation=0;
   const reader=new FileReader();
   reader.onload=e=>{
     const img=new Image();
-    img.onload=()=>{ origImage=img; showCrop(); };
+    img.onload=()=>{origImage=img;initCrop();};
     img.src=e.target.result;
   };
   reader.readAsDataURL(file);
 }
 
-function showCrop(){
-  document.getElementById('upload-area').classList.add('hidden');
-  document.getElementById('preview-area').classList.add('hidden');
-  document.getElementById('crop-area').classList.remove('hidden');
-  const canvas=document.getElementById('crop-canvas');
-  const maxW=Math.min(origImage.width,600);
-  const scale=maxW/origImage.width;
-  canvas.width=origImage.width*scale;
-  canvas.height=origImage.height*scale;
-  cropImg={w:canvas.width,h:canvas.height,scale};
-  box={x:5,y:5,w:90,h:90};
-  drawCropCanvas();
-  setupCropEvents();
+function getRotatedSize(){
+  const sw=Math.abs(rotation)===90?origImage.height:origImage.width;
+  const sh=Math.abs(rotation)===90?origImage.width:origImage.height;
+  return{w:sw,h:sh};
 }
 
-function drawCropCanvas(){
+function initCrop(){
+  show('step-crop');
+  drawCanvas();
+  resetCrop();
+  setupEvents();
+}
+
+function drawCanvas(){
+  const canvas=document.getElementById('crop-canvas');
+  const wrap=document.getElementById('crop-wrap');
+  const maxW=Math.min(wrap.clientWidth||400,500);
+  const {w,h}=getRotatedSize();
+  const scale=maxW/w;
+  canvas.width=Math.round(w*scale);
+  canvas.height=Math.round(h*scale);
+  const ctx=canvas.getContext('2d');
+  ctx.save();
+  ctx.translate(canvas.width/2,canvas.height/2);
+  ctx.rotate(rotation*Math.PI/180);
+  ctx.drawImage(origImage,-origImage.width*scale/2,-origImage.height*scale/2,origImage.width*scale,origImage.height*scale);
+  ctx.restore();
+}
+
+function redraw(){
+  drawCanvas();
   const canvas=document.getElementById('crop-canvas');
   const ctx=canvas.getContext('2d');
-  ctx.drawImage(origImage,0,0,canvas.width,canvas.height);
-  // darken outside
-  ctx.fillStyle='rgba(0,0,0,0.45)';
-  const bx=box.x/100*canvas.width, by=box.y/100*canvas.height;
-  const bw=box.w/100*canvas.width, bh=box.h/100*canvas.height;
-  ctx.fillRect(0,0,canvas.width,by);
-  ctx.fillRect(0,by+bh,canvas.width,canvas.height-(by+bh));
-  ctx.fillRect(0,by,bx,bh);
-  ctx.fillRect(bx+bw,by,canvas.width-(bx+bw),bh);
-  // border
-  ctx.strokeStyle='#fff'; ctx.lineWidth=2;
-  ctx.strokeRect(bx,by,bw,bh);
-  // handles
-  const handles=[[bx,by],[bx+bw,by],[bx,by+bh],[bx+bw,by+bh]];
+  // Darken outside crop
+  ctx.fillStyle='rgba(0,0,0,0.5)';
+  ctx.fillRect(0,0,canvas.width,cb.y);
+  ctx.fillRect(0,cb.y+cb.h,canvas.width,canvas.height-cb.y-cb.h);
+  ctx.fillRect(0,cb.y,cb.x,cb.h);
+  ctx.fillRect(cb.x+cb.w,cb.y,canvas.width-cb.x-cb.w,cb.h);
+  // Border
+  ctx.strokeStyle='#fff';ctx.lineWidth=2;
+  ctx.strokeRect(cb.x,cb.y,cb.w,cb.h);
+  // Rule of thirds
+  ctx.strokeStyle='rgba(255,255,255,0.3)';ctx.lineWidth=1;
+  [1/3,2/3].forEach(f=>{
+    ctx.beginPath();ctx.moveTo(cb.x+cb.w*f,cb.y);ctx.lineTo(cb.x+cb.w*f,cb.y+cb.h);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cb.x,cb.y+cb.h*f);ctx.lineTo(cb.x+cb.w,cb.y+cb.h*f);ctx.stroke();
+  });
+  // Corner handles — big for mobile
+  const handles=[[cb.x,cb.y],[cb.x+cb.w,cb.y],[cb.x,cb.y+cb.h],[cb.x+cb.w,cb.y+cb.h]];
   handles.forEach(([hx,hy])=>{
-    ctx.beginPath(); ctx.arc(hx,hy,8,0,Math.PI*2);
-    ctx.fillStyle='#fff'; ctx.fill();
+    ctx.beginPath();ctx.arc(hx,hy,14,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,255,255,0.9)';ctx.fill();
+    ctx.strokeStyle='#888';ctx.lineWidth=1;ctx.stroke();
+  });
+  // Edge midpoints
+  const mids=[[cb.x+cb.w/2,cb.y],[cb.x+cb.w/2,cb.y+cb.h],[cb.x,cb.y+cb.h/2],[cb.x+cb.w,cb.y+cb.h/2]];
+  mids.forEach(([mx,my])=>{
+    ctx.beginPath();ctx.arc(mx,my,8,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,255,255,0.7)';ctx.fill();
   });
 }
 
-function getCanvasPos(e, canvas){
-  const r=canvas.getBoundingClientRect();
-  const clientX=e.touches?e.touches[0].clientX:e.clientX;
-  const clientY=e.touches?e.touches[0].clientY:e.clientY;
-  return {
-    x:(clientX-r.left)/r.width*100,
-    y:(clientY-r.top)/r.height*100
-  };
+function resetCrop(){
+  const canvas=document.getElementById('crop-canvas');
+  const pad=canvas.width*0.05;
+  cb={x:pad,y:pad,w:canvas.width-pad*2,h:canvas.height-pad*2};
+  redraw();
 }
 
-function setupCropEvents(){
+function rotate(deg){
+  rotation=(rotation+deg+360)%360;
+  initCrop();
+}
+
+// Touch/mouse events
+function getPos(e,canvas){
+  const r=canvas.getBoundingClientRect();
+  const scaleX=canvas.width/r.width;
+  const scaleY=canvas.height/r.height;
+  const src=e.touches?e.touches[0]:e;
+  return{x:(src.clientX-r.left)*scaleX,y:(src.clientY-r.top)*scaleY};
+}
+
+function hitTest(px,py){
+  const T=20; // touch tolerance px
+  const corners=[
+    {id:'tl',x:cb.x,y:cb.y},{id:'tr',x:cb.x+cb.w,y:cb.y},
+    {id:'bl',x:cb.x,y:cb.y+cb.h},{id:'br',x:cb.x+cb.w,y:cb.y+cb.h}
+  ];
+  for(const c of corners) if(Math.hypot(px-c.x,py-c.y)<T) return c.id;
+  const mids=[
+    {id:'mt',x:cb.x+cb.w/2,y:cb.y},{id:'mb',x:cb.x+cb.w/2,y:cb.y+cb.h},
+    {id:'ml',x:cb.x,y:cb.y+cb.h/2},{id:'mr',x:cb.x+cb.w,y:cb.y+cb.h/2}
+  ];
+  for(const m of mids) if(Math.hypot(px-m.x,py-m.y)<T) return m.id;
+  if(px>cb.x&&px<cb.x+cb.w&&py>cb.y&&py<cb.y+cb.h) return 'move';
+  return null;
+}
+
+function setupEvents(){
   const canvas=document.getElementById('crop-canvas');
-  const onStart=e=>{
+  canvas.onmousedown=canvas.ontouchstart=e=>{
     e.preventDefault();
-    const pos=getCanvasPos(e,canvas);
-    const bx=box.x,by=box.y,bw=box.w,bh=box.h;
-    const near=(px,py,tx,ty)=>Math.abs(px-tx)<8&&Math.abs(py-ty)<8;
-    if(near(pos.x,pos.y,bx,by)) dragging='tl';
-    else if(near(pos.x,pos.y,bx+bw,by)) dragging='tr';
-    else if(near(pos.x,pos.y,bx,by+bh)) dragging='bl';
-    else if(near(pos.x,pos.y,bx+bw,by+bh)) dragging='br';
-    else if(pos.x>bx&&pos.x<bx+bw&&pos.y>by&&pos.y<by+bh){
-      dragging='move';
-      dragStart={x:pos.x,y:pos.y};
-      boxStart={...box};
-    }
+    const pos=getPos(e,canvas);
+    drag=hitTest(pos.x,pos.y);
+    dragOrig={...pos};cbOrig={...cb};
   };
-  const onMove=e=>{
-    if(!dragging)return; e.preventDefault();
-    const pos=getCanvasPos(e,canvas);
-    if(dragging==='tl'){box.w+=box.x-pos.x;box.h+=box.y-pos.y;box.x=pos.x;box.y=pos.y;}
-    else if(dragging==='tr'){box.w=pos.x-box.x;box.h+=box.y-pos.y;box.y=pos.y;}
-    else if(dragging==='bl'){box.w+=box.x-pos.x;box.x=pos.x;box.h=pos.y-box.y;}
-    else if(dragging==='br'){box.w=pos.x-box.x;box.h=pos.y-box.y;}
-    else if(dragging==='move'){
-      box.x=Math.max(0,Math.min(100-boxStart.w,boxStart.x+(pos.x-dragStart.x)));
-      box.y=Math.max(0,Math.min(100-boxStart.h,boxStart.y+(pos.y-dragStart.y)));
-    }
-    box.w=Math.max(10,Math.min(100-box.x,box.w));
-    box.h=Math.max(10,Math.min(100-box.y,box.h));
-    drawCropCanvas();
+  canvas.onmousemove=canvas.ontouchmove=e=>{
+    if(!drag)return;e.preventDefault();
+    const pos=getPos(e,canvas);
+    const dx=pos.x-dragOrig.x,dy=pos.y-dragOrig.y;
+    const W=canvas.width,H=canvas.height;
+    let{x,y,w,h}=cbOrig;
+    if(drag==='move'){x=Math.max(0,Math.min(W-w,x+dx));y=Math.max(0,Math.min(H-h,y+dy));}
+    else if(drag==='tl'){const nw=Math.max(MIN,w-dx),nh=Math.max(MIN,h-dy);x=x+w-nw;y=y+h-nh;w=nw;h=nh;}
+    else if(drag==='tr'){w=Math.max(MIN,w+dx);const nh=Math.max(MIN,h-dy);y=y+h-nh;h=nh;}
+    else if(drag==='bl'){const nw=Math.max(MIN,w-dx);x=x+w-nw;w=nw;h=Math.max(MIN,h+dy);}
+    else if(drag==='br'){w=Math.max(MIN,w+dx);h=Math.max(MIN,h+dy);}
+    else if(drag==='mt'){const nh=Math.max(MIN,h-dy);y=y+h-nh;h=nh;}
+    else if(drag==='mb'){h=Math.max(MIN,h+dy);}
+    else if(drag==='ml'){const nw=Math.max(MIN,w-dx);x=x+w-nw;w=nw;}
+    else if(drag==='mr'){w=Math.max(MIN,w+dx);}
+    x=Math.max(0,Math.min(W-w,x));y=Math.max(0,Math.min(H-h,y));
+    w=Math.min(w,W-x);h=Math.min(h,H-y);
+    cb={x,y,w,h};redraw();
   };
-  const onEnd=()=>{ dragging=null; };
-  canvas.addEventListener('mousedown',onStart);
-  canvas.addEventListener('mousemove',onMove);
-  canvas.addEventListener('mouseup',onEnd);
-  canvas.addEventListener('touchstart',onStart,{passive:false});
-  canvas.addEventListener('touchmove',onMove,{passive:false});
-  canvas.addEventListener('touchend',onEnd);
+  canvas.onmouseup=canvas.ontouchend=()=>{drag=null;};
 }
 
 function applyCrop(){
-  const offscreen=document.createElement('canvas');
-  const sx=box.x/100*origImage.width;
-  const sy=box.y/100*origImage.height;
-  const sw=box.w/100*origImage.width;
-  const sh=box.h/100*origImage.height;
-  offscreen.width=sw; offscreen.height=sh;
-  offscreen.getContext('2d').drawImage(origImage,sx,sy,sw,sh,0,0,sw,sh);
-  // Resize to max 1200px wide to reduce upload size
-  const maxW=1200;
-  const finalCanvas=document.createElement('canvas');
-  const scale=Math.min(1,maxW/sw);
-  finalCanvas.width=sw*scale; finalCanvas.height=sh*scale;
-  finalCanvas.getContext('2d').drawImage(offscreen,0,0,finalCanvas.width,finalCanvas.height);
-  croppedBase64=finalCanvas.toDataURL('image/jpeg',0.82).split(',')[1];
-  const preview=document.getElementById('preview-img');
-  preview.src='data:image/jpeg;base64,'+croppedBase64;
-  document.getElementById('crop-area').classList.add('hidden');
-  document.getElementById('preview-area').classList.remove('hidden');
+  const canvas=document.getElementById('crop-canvas');
+  const{w:rw,h:rh}=getRotatedSize();
+  const scaleX=rw/canvas.width;
+  const scaleY=rh/canvas.height;
+  const sx=cb.x*scaleX,sy=cb.y*scaleY;
+  const sw=cb.w*scaleX,sh=cb.h*scaleY;
+  // Draw rotated+cropped to offscreen
+  const off=document.createElement('canvas');
+  const maxW=Math.min(sw,1200);
+  const s=maxW/sw;
+  off.width=Math.round(sw*s);off.height=Math.round(sh*s);
+  const ctx=off.getContext('2d');
+  ctx.save();
+  ctx.translate(off.width/2,off.height/2);
+  ctx.rotate(rotation*Math.PI/180);
+  const iw=origImage.width*s,ih=origImage.height*s;
+  const ox=Math.abs(rotation)===90?sy:sx;
+  const oy=Math.abs(rotation)===90?sx:sy;
+  // Simpler: just draw the rotated full image and crop
+  const tmp=document.createElement('canvas');
+  const{w:tw,h:th}=getRotatedSize();
+  const ts=Math.min(1200/tw,1200/th,1);
+  tmp.width=Math.round(tw*ts);tmp.height=Math.round(th*ts);
+  const tc=tmp.getContext('2d');
+  tc.save();tc.translate(tmp.width/2,tmp.height/2);
+  tc.rotate(rotation*Math.PI/180);
+  tc.drawImage(origImage,-origImage.width*ts/2,-origImage.height*ts/2,origImage.width*ts,origImage.height*ts);
+  tc.restore();
+  // Now crop from tmp
+  const final=document.createElement('canvas');
+  const fx=cb.x/canvas.width*tmp.width;
+  const fy=cb.y/canvas.height*tmp.height;
+  const fw=cb.w/canvas.width*tmp.width;
+  const fh=cb.h/canvas.height*tmp.height;
+  const fMax=Math.min(1200/fw,1200/fh,1);
+  final.width=Math.round(fw*fMax);final.height=Math.round(fh*fMax);
+  final.getContext('2d').drawImage(tmp,fx,fy,fw,fh,0,0,final.width,final.height);
+  croppedBase64=final.toDataURL('image/jpeg',0.85).split(',')[1];
+  document.getElementById('preview-img').src='data:image/jpeg;base64,'+croppedBase64;
+  show('step-preview');
 }
 
-function reCrop(){ showCrop(); croppedBase64=null; }
-
+function reCrop(){croppedBase64=null;show('step-crop');redraw();}
 function resetPhoto(){
-  croppedBase64=null; origImage=null;
+  croppedBase64=null;origImage=null;rotation=0;drag=null;
   document.getElementById('f-photo').value='';
-  document.getElementById('upload-area').classList.remove('hidden');
-  document.getElementById('crop-area').classList.add('hidden');
-  document.getElementById('preview-area').classList.add('hidden');
+  show('step-pick');
 }
 
 // ── Submit ───────────────────────────────────────────────
@@ -409,15 +471,11 @@ async function submitArtwork(){
   const msg=document.getElementById('form-msg');
   if(!name){msg.innerHTML='<div class="error-msg">Please enter a project name.</div>';return;}
   const btn=document.getElementById('submit-btn');
-  btn.textContent='Saving…'; btn.disabled=true; msg.innerHTML='';
+  btn.textContent='Saving…';btn.disabled=true;msg.innerHTML='';
   try{
     const payload={name,date,material,notes};
     if(croppedBase64){payload.photoData=croppedBase64;payload.photoName=photoName;payload.photoMime='image/jpeg';}
-    const res=await fetch(API,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
-    });
+    const res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     const result=await res.json();
     if(result.success){
       msg.innerHTML='<div class="success-msg">Artwork saved! 🎨</div>';
@@ -428,7 +486,7 @@ async function submitArtwork(){
   }catch(e){
     msg.innerHTML=`<div class="error-msg">Failed to save: ${e.message}</div>`;
   }
-  btn.textContent='Save artwork'; btn.disabled=false;
+  btn.textContent='Save artwork';btn.disabled=false;
 }
 
 load();
