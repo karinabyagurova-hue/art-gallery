@@ -32,7 +32,15 @@ input[type=text]{flex:1;min-width:160px}
 .card-date{font-size:13px;color:#888}
 .badge{display:inline-block;font-size:11px;padding:3px 10px;border-radius:20px;background:#f0f0f0;color:#555;border:1px solid #e0e0e0;width:fit-content}
 .card-notes{font-size:13px;color:#666;line-height:1.5}
+.card-actions{display:flex;gap:6px;margin-top:8px;padding-top:8px;border-top:1px solid #f0f0f0}
+.card-actions button{flex:1;padding:6px;border-radius:6px;border:1px solid #eee;background:#fafafa;font-size:12px;cursor:pointer;color:#555}
+.card-actions button:hover{background:#f0f0f0}
+.card-actions button.del:hover{background:#fdf0f0;color:#c0392b;border-color:#f5c6c6}
 .empty,.loading{text-align:center;color:#999;padding:3rem;font-size:15px}
+/* Edit modal */
+.edit-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:200;padding:1rem}
+.edit-modal{background:#fff;border-radius:16px;padding:1.5rem;width:100%;max-width:460px;max-height:90vh;overflow-y:auto}
+.edit-modal h2{font-size:18px;font-weight:500;margin-bottom:1.25rem}
 
 /* Modal */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;z-index:100;padding:1rem}
@@ -90,6 +98,40 @@ input[type=text]{flex:1;min-width:160px}
 </div>
 
 <div id="gallery" class="loading">Loading artwork…</div>
+
+<!-- Edit modal -->
+<div class="edit-overlay hidden" id="edit-overlay">
+  <div class="edit-modal">
+    <h2>✏️ Edit artwork</h2>
+    <input type="hidden" id="e-row">
+    <div class="form-group">
+      <label>Project name</label>
+      <input type="text" id="e-name">
+    </div>
+    <div class="form-group">
+      <label>Date created</label>
+      <input type="date" id="e-date">
+    </div>
+    <div class="form-group">
+      <label>Materials used</label>
+      <select id="e-material">
+        <option value="">Select material…</option>
+        <option>acrylic</option><option>pencil</option><option>felt pen</option>
+        <option>pen</option><option>watercolor</option><option>paper</option>
+        <option>clay</option><option>other</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Notes</label>
+      <textarea id="e-notes" style="width:100%;padding:10px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;font-family:inherit;min-height:70px;outline:none;resize:vertical"></textarea>
+    </div>
+    <div id="edit-msg"></div>
+    <div class="form-actions">
+      <button class="btn btn-outline" onclick="closeEdit()">Cancel</button>
+      <button class="btn" id="edit-btn" onclick="saveEdit()">Save changes</button>
+    </div>
+  </div>
+</div>
 
 <!-- Modal -->
 <div class="overlay hidden" id="overlay">
@@ -249,6 +291,10 @@ function render(){
         <div class="card-date">${fmtDate(r.date)}</div>
         ${r.material?`<span class="badge">${esc(r.material)}</span>`:''}
         ${r.notes?`<div class="card-notes">${esc(r.notes)}</div>`:''}
+        <div class="card-actions">
+          <button onclick="openEdit(${r._row})">✏️ Edit</button>
+          <button class="del" onclick="deleteArtwork(${r._row},'${esc(r.name)}')">🗑 Delete</button>
+        </div>
       </div></div>`;
   }).join('');
 }
@@ -460,6 +506,58 @@ function resetPhoto(){
   croppedBase64=null;origImage=null;rotation=0;drag=null;
   document.getElementById('f-photo').value='';
   show('step-pick');
+}
+
+// ── Edit & Delete ─────────────────────────────────────────
+function openEdit(row){
+  const r=all.find(x=>x._row===row);
+  if(!r)return;
+  document.getElementById('e-row').value=row;
+  document.getElementById('e-name').value=r.name;
+  document.getElementById('e-date').value=r.date?new Date(r.date).toISOString().split('T')[0]:'';
+  document.getElementById('e-material').value=r.material||'';
+  document.getElementById('e-notes').value=r.notes||'';
+  document.getElementById('edit-msg').innerHTML='';
+  document.getElementById('edit-overlay').classList.remove('hidden');
+}
+function closeEdit(){
+  document.getElementById('edit-overlay').classList.add('hidden');
+}
+async function saveEdit(){
+  const row=parseInt(document.getElementById('e-row').value);
+  const name=document.getElementById('e-name').value.trim();
+  const date=document.getElementById('e-date').value;
+  const material=document.getElementById('e-material').value;
+  const notes=document.getElementById('e-notes').value.trim();
+  const msg=document.getElementById('edit-msg');
+  if(!name){msg.innerHTML='<div class="error-msg">Name is required.</div>';return;}
+  const btn=document.getElementById('edit-btn');
+  btn.textContent='Saving…';btn.disabled=true;
+  try{
+    const res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'edit',row,name,date,material,notes})});
+    const result=await res.json();
+    if(result.success){
+      closeEdit();load();
+    }else{
+      msg.innerHTML=`<div class="error-msg">${result.error||'Error saving'}</div>`;
+    }
+  }catch(e){
+    msg.innerHTML=`<div class="error-msg">Failed: ${e.message}</div>`;
+  }
+  btn.textContent='Save changes';btn.disabled=false;
+}
+async function deleteArtwork(row,name){
+  if(!confirm(`Delete "${name}"? This cannot be undone.`))return;
+  try{
+    const res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'delete',row})});
+    const result=await res.json();
+    if(result.success)load();
+    else alert('Error deleting: '+(result.error||'Unknown error'));
+  }catch(e){
+    alert('Failed to delete: '+e.message);
+  }
 }
 
 // ── Submit ───────────────────────────────────────────────
