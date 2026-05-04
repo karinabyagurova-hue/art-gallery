@@ -218,7 +218,7 @@ async function load(){
     const res=await fetch(API);
     const data=await res.json();
     all=data.map(r=>({
-      _row:r._row,
+      _row: Number(r._row) || 0,
       name:gv(r,"Project Name (what's it called?)",'project name','name'),
       date:gv(r,'Date Created','date created','date'),
       material:gv(r,'Materials Used','materials used','material'),
