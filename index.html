@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
+<meta name="googlebot" content="noindex, nofollow">
 <title>Arya's Art Gallery</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -73,9 +75,30 @@ select{padding:9px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;o
 /* Lightbox */
 .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.9);display:flex;align-items:center;justify-content:center;z-index:300;cursor:zoom-out}
 .lightbox img{max-width:95vw;max-height:95vh;border-radius:8px;object-fit:contain}
+
+/* Password gate */
+.gate{position:fixed;inset:0;background:#faf9f7;display:flex;align-items:center;justify-content:center;z-index:500;padding:1rem}
+.gate-box{background:#fff;border:1px solid #eee;border-radius:16px;padding:2rem;max-width:360px;width:100%;text-align:center}
+.gate-box h2{font-size:20px;font-weight:500;margin-bottom:.5rem}
+.gate-box p{font-size:14px;color:#888;margin-bottom:1.25rem}
+.gate-box input{width:100%;padding:12px;border:1px solid #ddd;border-radius:8px;font-size:15px;text-align:center;outline:none;margin-bottom:.75rem}
+.gate-box input:focus{border-color:#999}
+.gate-box button{width:100%;padding:12px;background:#1a1a1a;color:#fff;border:none;border-radius:8px;font-size:15px;cursor:pointer}
+.gate-err{color:#c0392b;font-size:13px;margin-top:.5rem;min-height:18px}
 </style>
 </head>
 <body>
+
+<!-- PASSWORD GATE -->
+<div class="gate" id="gate">
+  <div class="gate-box">
+    <h2>🎨 Arya's Art Gallery</h2>
+    <p>Please enter the password to view</p>
+    <input type="password" id="gate-input" placeholder="Password" onkeydown="if(event.key==='Enter')checkGate()">
+    <button onclick="checkGate()">Enter</button>
+    <div class="gate-err" id="gate-err"></div>
+  </div>
+</div>
 
 <div class="header">
   <h1>🎨 Arya's art gallery</h1>
@@ -173,7 +196,20 @@ select{padding:9px 12px;border:1px solid #ddd;border-radius:8px;font-size:14px;o
 
 <script>
 const API='/api/proxy';
+const GALLERY_PASSWORD='arya2026';
 let all=[];
+
+// ── Password gate ─────────────────────────────────────────
+function checkGate(){
+  const val=document.getElementById('gate-input').value;
+  if(val===GALLERY_PASSWORD){
+    document.getElementById('gate').style.display='none';
+    load();
+  }else{
+    document.getElementById('gate-err').textContent='Incorrect password. Try again.';
+    document.getElementById('gate-input').value='';
+  }
+}
 let origImg=null,rotation=0,croppedB64=null,photoName='artwork.jpg';
 let cb={x:0,y:0,w:0,h:0},drag=null,dragOrig=null,cbOrig=null;
 const HMIN=30;
@@ -507,6 +543,7 @@ async function saveEdit(){
 
 // ── Delete ────────────────────────────────────────────────
 async function delArtwork(row,name){
+  if(!row||row<2){alert('Cannot delete: row ID missing. Try refreshing the page first.');return;}
   if(!confirm(`Delete "${name}"?\nThis cannot be undone.`))return;
   try{
     const res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},
@@ -517,7 +554,7 @@ async function delArtwork(row,name){
   }catch(e){alert('Failed: '+e.message);}
 }
 
-load();
+// Gallery loads only after password is entered — see checkGate()
 </script>
 </body>
 </html>
